@@ -31,15 +31,14 @@ class LoginController extends Controller
         }
 
         $accessToken = Auth::user()->createToken('authToken')->accessToken;
-
+        $user = User::with('activeLicense')->find(Auth::user()->id);
+        $user->access_token = $accessToken;
         return response([
             "status" => true,
             "message" => "Successfully login. Welcome!",
-            "body" => [
-                "user" => User::with('activeLicense')->find(Auth::user()->id),
-                "access_token" => $accessToken
-            ],
-            "redirect" => false
+            "body" => $user,
+            "redirect" => false,
+            "access_token" => $accessToken
         ]);
     }
 

@@ -53,7 +53,7 @@ class UserController extends Controller
         return response([
             "status" => !is_null($user) ? true : false,
             "message" => !is_null($user) ? "found user" : "user not found",
-            "body" => [ "user" => $user ],
+            "body" => $user ,
             "redirect" => false
         ]);
     }
@@ -64,7 +64,7 @@ class UserController extends Controller
         return response([
             "status" => !is_null($user) ? true : false,
             "message" => !is_null($user) ? "found user" : "user not found",
-            "body" => [ "user" => $user ],
+            "body" => $user,
             "redirect" => false
         ]);
     }
@@ -102,7 +102,7 @@ class UserController extends Controller
         return response([
             "status" => !is_null($user) ? true : false,
             "message" => !is_null($user) ? "updated user" : "user not updated",
-            "body" => [ "user" => $user ],
+            "body" => $user,
             "redirect" => false
         ]);
     }
