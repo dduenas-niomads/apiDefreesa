@@ -26,8 +26,8 @@ class ProductController extends Controller
             }
             $products = $products->paginate(env('ITEMS_PAGINATOR'));
             return response([
-                "status" => !is_empty($products) ? true : false,
-                "message" => !is_empty($products) ? "list of products" : "products not found",
+                "status" => !empty($products) ? true : false,
+                "message" => !empty($products) ? "list of products" : "products not found",
                 "body" => $products,
                 "redirect" => false
             ], 200);

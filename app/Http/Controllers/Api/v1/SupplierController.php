@@ -26,8 +26,8 @@ class SupplierController extends Controller
             }
             $suppliers = $suppliers->paginate(env('ITEMS_PAGINATOR'));
             return response([
-                "status" => !is_empty($suppliers) ? true : false,
-                "message" => !is_empty($suppliers) ? "list of suppliers" : "suppliers not found",
+                "status" => !empty($suppliers) ? true : false,
+                "message" => !empty($suppliers) ? "list of suppliers" : "suppliers not found",
                 "body" => $suppliers,
                 "redirect" => false
             ], 200);

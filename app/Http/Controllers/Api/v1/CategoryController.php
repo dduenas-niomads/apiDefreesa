@@ -21,8 +21,8 @@ class CategoryController extends Controller
         if (!is_null($user)) {
             $categories = Category::whereNull('deleted_at')->paginate(env('ITEMS_PAGINATOR'));
             return response([
-                "status" => !is_empty($categories) ? true : false,
-                "message" => !is_empty($categories) ? "list of categories" : "categories not found",
+                "status" => !empty($categories) ? true : false,
+                "message" => !empty($categories) ? "list of categories" : "categories not found",
                 "body" => $categories,
                 "redirect" => false
             ], 200);
