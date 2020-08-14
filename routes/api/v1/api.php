@@ -30,8 +30,17 @@ Route::prefix('/licenses')->group(function() {
     Route::middleware('auth:api')->get('/by-type/{type}', 'Api\v1\LicenseController@showByType');
 });
 
-// Purchases
-Route::prefix('/purchases')->group(function() {
-    Route::middleware('auth:api')->get('/next-number', 'Api\v1\PurchaseController@generatePurchaseNumber');
-    Route::middleware('auth:api')->post('/', 'Api\v1\PurchaseController@createPurchase');
+// Categories
+Route::prefix('/categories')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\CategoryController@index');
+});
+
+// Suppliers
+Route::prefix('/suppliers')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\SupplierController@index');
+});
+
+// Products
+Route::prefix('/products')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\ProductController@index');
 });
