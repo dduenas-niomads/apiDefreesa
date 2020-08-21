@@ -155,7 +155,7 @@ class OrderController extends Controller
             }
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "find order" : "order not found",
+                "message" => !empty($order) ? "deleted order" : "order not found",
                 "body" => $order,
                 "redirect" => false
             ], $status);
