@@ -136,8 +136,36 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Order::TABLE_NAME . '.users_id', $user->id)
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->find($id);
+            $status = 404;
+            if (!is_null($order)) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->status = 5;
+                $order->flag_active = Order::STATE_INACTIVE;
+                $order->save();
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "find order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 }
