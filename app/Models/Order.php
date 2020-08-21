@@ -18,7 +18,7 @@ class Order extends Model
     protected $fillable = [
         //Table Rows
         'id','users_id','details_info','total','total_info',
-        'status',
+        'status','commentary','commentary_info',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
