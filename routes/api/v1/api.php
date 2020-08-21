@@ -44,3 +44,10 @@ Route::prefix('/suppliers')->group(function() {
 Route::prefix('/products')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\ProductController@index');
 });
+
+// Orders
+Route::prefix('/orders')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');
+    Route::middleware('auth:api')->post('/', 'Api\v1\OrderController@store');
+    Route::middleware('auth:api')->getById('/', 'Api\v1\OrderController@show');
+});
