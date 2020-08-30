@@ -10,6 +10,8 @@ class Order extends Model
     const TABLE_NAME = 'bs_orders';
     const STATE_ACTIVE = true;
     const STATE_INACTIVE = false;
+    const STATUS_PROCEED = 2;
+    const STATUS_NOT_PROCEED = 6;
     /**
      * The attributes that are mass assignable.
      *
@@ -18,7 +20,7 @@ class Order extends Model
     protected $fillable = [
         //Table Rows
         'id','users_id','details_info','total','total_info',
-        'status','commentary','commentary_info',
+        'status','commentary','commentary_info','purchase_info',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -30,6 +32,7 @@ class Order extends Model
     protected $casts = [
         'details_info' => 'array',
         'total_info' => 'array',
+        'purchase_info' => 'array'
     ];    
     public function getFillable() {
         # code...
