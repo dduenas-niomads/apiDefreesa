@@ -21,6 +21,7 @@ class Order extends Model
         //Table Rows
         'id','users_id','details_info','total','total_info',
         'status','commentary','commentary_info','purchase_info',
+        'address_info',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -32,7 +33,8 @@ class Order extends Model
     protected $casts = [
         'details_info' => 'array',
         'total_info' => 'array',
-        'purchase_info' => 'array'
+        'purchase_info' => 'array',
+        'address_info' => 'array'
     ];    
     public function getFillable() {
         # code...

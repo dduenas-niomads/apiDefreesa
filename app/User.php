@@ -19,8 +19,9 @@ class User extends Authenticatable
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'name', 'lastname', 'email', 'password', 'active', 'activation_token', 'forgot_password_token',
-        'phone', 'document_number'
+        'name', 'lastname', 'email', 'password', 'active',
+        'activation_token', 'forgot_password_token',
+        'phone', 'document_number', 'address_info'
     ];
 
     /**
@@ -39,6 +40,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'address_info' => 'array'
     ];
 
     public function activeLicense()

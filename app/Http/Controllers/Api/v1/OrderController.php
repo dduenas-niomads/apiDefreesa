@@ -62,6 +62,10 @@ class OrderController extends Controller
             $params = $request->all();
             $params['users_id'] = $user->id;
             $order = Order::create($params);
+            if (isset($params['address_info'])) {
+                $user->address_info = $params['address_info'];
+                $user->save();
+            }
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "created order" : "order cannot be created",
