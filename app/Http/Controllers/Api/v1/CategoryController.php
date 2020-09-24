@@ -86,7 +86,36 @@ class CategoryController extends Controller
      */
     public function update(Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $category = Category::where(Category::TABLE_NAME . '.users_id', $user->id)
+                ->find($id);
+            if (!is_null($category)) {
+                $params = $request->all();
+                $category->fill($params);
+                $category->save();
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "find Category" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "find Category" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**

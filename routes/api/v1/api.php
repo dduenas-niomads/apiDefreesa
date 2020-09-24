@@ -33,6 +33,7 @@ Route::prefix('/licenses')->group(function() {
 // Categories
 Route::prefix('/categories')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\CategoryController@index');
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\CategoryController@update');
 });
 
 // Suppliers
