@@ -19,7 +19,15 @@ class CategoryController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $categories = Category::whereNull('deleted_at')->paginate(env('ITEMS_PAGINATOR'));
+            $categories = Category::whereNull('deleted_at');
+            if (isset($params['search']) && !is_null($params['search'])) {
+                $key = $params['search'];
+                $categories = $categories->where(function($query) use ($key){
+                    $query->where(Category::TABLE_NAME . '.name', 'LIKE', '%' . $key . '%');
+                    $query->orWhere(Category::TABLE_NAME . '.description', 'LIKE', '%' . $key . '%');
+                });
+            }
+            $categories = $categories->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($categories) ? true : false,
                 "message" => !empty($categories) ? "list of categories" : "categories not found",
