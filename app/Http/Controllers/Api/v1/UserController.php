@@ -91,6 +91,10 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $params = $request->all();
+        if (isset($params['null_validation']) && $params['null_validation']) {
+            $params = array_filter($params);
+        }
+        
         if (isset($params['email'])) {
             unset($params['email']);
         }
