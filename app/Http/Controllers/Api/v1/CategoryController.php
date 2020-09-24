@@ -28,6 +28,9 @@ class CategoryController extends Controller
                     $query->orWhere(Category::TABLE_NAME . '.description', 'LIKE', '%' . $key . '%');
                 });
             }
+            if (isset($params['orderBy']) && !is_null($params['orderBy'])) {
+                $categories = $categories->orderBy($params['orderBy'], $params['orderDir']);
+            }
             $categories = $categories->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($categories) ? true : false,
