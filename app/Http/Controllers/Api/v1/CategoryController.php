@@ -15,10 +15,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         if (!is_null($user)) {
+            $params = $request->all();
             $categories = Category::whereNull('deleted_at');
             if (isset($params['search']) && !is_null($params['search'])) {
                 $key = $params['search'];
