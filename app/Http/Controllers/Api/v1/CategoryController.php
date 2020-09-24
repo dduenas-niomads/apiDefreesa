@@ -88,8 +88,7 @@ class CategoryController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $category = Category::where(Category::TABLE_NAME . '.users_id', $user->id)
-                ->find($id);
+            $category = Category::find($id);
             if (!is_null($category)) {
                 $params = $request->all();
                 $category->fill($params);
