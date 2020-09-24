@@ -95,14 +95,14 @@ class CategoryController extends Controller
                 $category->save();
                 return response([
                     "status" => !empty($category) ? true : false,
-                    "message" => !empty($category) ? "find Category" : "Category not found",
+                    "message" => !empty($category) ? "Categoría actualizada correctamente" : "Category not found",
                     "body" => $category,
                     "redirect" => false
                 ], 200);
             } else {
                 return response([
                     "status" => !empty($category) ? true : false,
-                    "message" => !empty($category) ? "find Category" : "Category not found",
+                    "message" => !empty($category) ? "Categoría actualizada correctamente" : "Category not found",
                     "body" => $category,
                     "redirect" => false
                 ], 404);
