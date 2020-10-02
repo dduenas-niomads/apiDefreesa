@@ -24,6 +24,9 @@ class SupplierController extends Controller
             if (isset($params['category_id']) && (int)$params['category_id'] !== 0) {
                 $suppliers = $suppliers->where('bs_categories_id', (int)$params['category_id']);
             }
+            if (isset($params['key']) && $params['key'] !== "") {
+                $suppliers = $suppliers->where('tags', "LIKE", "%" . $params['key'] . "%");
+            }
             $suppliers = $suppliers->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($suppliers) ? true : false,
