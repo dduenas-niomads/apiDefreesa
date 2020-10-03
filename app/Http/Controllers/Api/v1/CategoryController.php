@@ -20,8 +20,10 @@ class CategoryController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $params = $request->all();
-            $categories = Category::whereNull('deleted_at')
-                ->where('flag_active', true);
+            $categories = Category::whereNull('deleted_at');
+            if (!isset($params['all'])) {
+                $categories = $categories->where('flag_active', true);
+            }
             if (isset($params['search']) && !is_null($params['search'])) {
                 $key = $params['search'];
                 $categories = $categories->where(function($query) use ($key){
