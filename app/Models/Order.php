@@ -44,11 +44,13 @@ class Order extends Model
     public function supplier()
     {
         return $this->belongsTo('App\Models\Supplier', 'bs_suppliers_id')
+            ->select('id', 'name', 'url_image')
             ->whereNull('deleted_at');
     }
     public function orderStatus()
     {
         return $this->belongsTo('App\Models\MsOrderStatus', 'status')
+            ->select('id', 'name', 'description')
             ->whereNull('deleted_at');
     }
     /**
