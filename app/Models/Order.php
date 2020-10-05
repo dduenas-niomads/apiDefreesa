@@ -22,6 +22,7 @@ class Order extends Model
         'id','users_id','details_info','total','total_info',
         'bs_suppliers_id','status','commentary_info','purchase_info',
         'address_info','commentary','tips','type_document','document_number',
+        'delivery_status',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -43,6 +44,11 @@ class Order extends Model
     public function supplier()
     {
         return $this->belongsTo('App\Models\Supplier', 'bs_suppliers_id')
+            ->whereNull('deleted_at');
+    }
+    public function orderStatus()
+    {
+        return $this->belongsTo('App\Models\MsOrderStatus', 'status')
             ->whereNull('deleted_at');
     }
     /**

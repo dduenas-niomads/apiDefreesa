@@ -101,6 +101,7 @@ class OrderController extends Controller
             $order = Order::where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->with('supplier')
+                ->with('orderStatus')
                 ->find($id);
             return response([
                 "status" => !empty($order) ? true : false,
