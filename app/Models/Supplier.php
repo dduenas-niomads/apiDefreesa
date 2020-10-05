@@ -18,6 +18,7 @@ class Supplier extends Model
     protected $fillable = [
         //Table Rows
         'id','bs_categories_id','name','description','url_image',
+        'image_carrousel',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -27,6 +28,7 @@ class Supplier extends Model
      * @var array
      */
     protected $casts = [
+        'image_carrousel' => 'array'
     ];    
     public function getFillable() {
         # code...

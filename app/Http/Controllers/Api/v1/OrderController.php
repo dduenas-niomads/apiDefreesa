@@ -61,6 +61,12 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $params = $request->all();
             $params['users_id'] = $user->id;
+            if (isset($params['details_info']) && is_array($params['details_info'])) {
+                $params['bs_suppliers_id'] = 0;
+                foreach ($params['details_info'] as $key => $value) {
+                    $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
+                }
+            }
             $order = Order::create($params);
             if (isset($params['address_info'])) {
                 $user->address_info = $params['address_info'];
@@ -94,6 +100,7 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $order = Order::where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->with('supplier')
                 ->find($id);
             return response([
                 "status" => !empty($order) ? true : false,
