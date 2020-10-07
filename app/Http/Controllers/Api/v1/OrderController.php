@@ -206,7 +206,11 @@ class OrderController extends Controller
 
     public function deliveryNextStatus($id, Request $request)
     {
-        $order = Order::find($id);
+        $order = Order::with('supplier')
+            ->with('customer')
+            ->with('orderStatus')
+            ->find($id);
+            
         if (!is_null($order)) {
             if ($order->status !== Order::STATUS_FINAL) {
                 $order->status = $order->status + 1;
