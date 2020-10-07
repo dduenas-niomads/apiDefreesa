@@ -12,6 +12,7 @@ class Order extends Model
     const STATE_INACTIVE = false;
     const STATUS_PROCEED = 2;
     const STATUS_NOT_PROCEED = 6;
+    const STATUS_FINAL = 5;
     /**
      * The attributes that are mass assignable.
      *
