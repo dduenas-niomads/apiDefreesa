@@ -101,6 +101,7 @@ class OrderController extends Controller
             $order = Order::where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->with('supplier')
+                ->with('customer')
                 ->with('orderStatus')
                 ->find($id);
             return response([
@@ -177,6 +178,38 @@ class OrderController extends Controller
                 "body" => null,
                 "redirect" => true
             ], 403);
+        }
+    }
+
+    public function deliveryNextStatus($id, Request $request)
+    {
+        $order = Order::find($id);
+        if (!is_null($order)) {
+            $params = $request->all();
+            if (isset($params['purchase_info'])) {
+                if (isset($params['success']) && (int)$params['success'] === 1) {
+                    $order->purchase_info = $params['purchase_info'];
+                    $order->status = Order::STATUS_PROCEED;
+                    $order->save();
+                } else {
+                    $order->purchase_info = $params['purchase_info'];
+                    $order->status = Order::STATUS_NOT_PROCEED;
+                    $order->save();
+                }
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "find order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "order updated" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], 404);
         }
     }
 

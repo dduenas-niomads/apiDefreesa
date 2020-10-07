@@ -44,7 +44,13 @@ class Order extends Model
     public function supplier()
     {
         return $this->belongsTo('App\Models\Supplier', 'bs_suppliers_id')
-            ->select('id', 'name', 'url_image')
+            ->select('id', 'name', 'url_image', 'phone')
+            ->whereNull('deleted_at');
+    }
+    public function customer()
+    {
+        return $this->belongsTo('App\User', 'users_id')
+            ->select('id', 'name', 'phone')
             ->whereNull('deleted_at');
     }
     public function orderStatus()

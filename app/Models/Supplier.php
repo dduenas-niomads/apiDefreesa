@@ -18,7 +18,7 @@ class Supplier extends Model
     protected $fillable = [
         //Table Rows
         'id','bs_categories_id','name','description','url_image',
-        'image_carrousel',
+        'image_carrousel','phone',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
