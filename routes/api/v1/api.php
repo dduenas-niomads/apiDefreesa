@@ -50,8 +50,8 @@ Route::prefix('/products')->group(function() {
 Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');
     Route::middleware('auth:api')->post('/', 'Api\v1\OrderController@store');
-    Route::middleware('auth:api')->get('/{id}', 'Api\v1\OrderController@show');
     Route::middleware('auth:api')->get('/delivery-main-order', 'Api\v1\OrderController@showMainOrder');
+    Route::middleware('auth:api')->get('/{id}', 'Api\v1\OrderController@show');
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\OrderController@update');
     Route::middleware('auth:api')->patch('/delivery-next-status/{id}', 'Api\v1\OrderController@deliveryNextStatus');
     Route::middleware('auth:api')->delete('/{id}', 'Api\v1\OrderController@destroy');
