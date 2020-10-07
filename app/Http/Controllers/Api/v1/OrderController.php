@@ -99,7 +99,6 @@ class OrderController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $order = Order::where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
@@ -122,7 +121,26 @@ class OrderController extends Controller
 
     public function showMainOrder(Request $request)
     {
-        return $this->show(126);
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->find(126);
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "find order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
