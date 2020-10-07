@@ -120,6 +120,11 @@ class OrderController extends Controller
         }
     }
 
+    public function showMainOrder(Request $request)
+    {
+        return $this->show(126);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
