@@ -123,10 +123,12 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::with('supplier')
+            $order = Order::where('status', '!=', 5)
+                ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
-                ->find(126);
+                ->orderBy('created_at', 'DESC')
+                ->first();
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "find order" : "order not found",
@@ -210,7 +212,7 @@ class OrderController extends Controller
             ->with('customer')
             ->with('orderStatus')
             ->find($id);
-            
+
         if (!is_null($order)) {
             if ($order->status !== Order::STATUS_FINAL) {
                 $order->status = $order->status + 1;
