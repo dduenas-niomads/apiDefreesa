@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Payment;
 
 class PaymentsController extends Controller
 {
@@ -80,5 +84,68 @@ class PaymentsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function myFounds()
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $payments = Payment::whereNull('deleted_at')->get();
+            return response()->json(['balance' => 250.25, 
+                                     'pending' => 24.58, 
+                                     'list' => [
+                                                    ['id' => 1, 
+                                                    'created_at' => "2020-10-06T18:17:57.000000Z", 
+                                                    'operation_supplier' => 'Gringo Perú',
+                                                    'operation_customer' => 'ITALO BRAGAGNINI', 
+                                                    'status_id'=> 5, 
+                                                    'status_name'=> 'PAGADO', 
+                                                    'amount'=> 5.83, 
+                                                    'currency'=> 'PEN'
+                                                    ],
+                                                    ['id' => 2, 
+                                                    'created_at' => "2020-10-06T18:19:57.000000Z", 
+                                                    'operation_supplier' => 'Mc Donalds',
+                                                    'operation_customer' => 'GABRIEL ARCE', 
+                                                    'status_id'=> 2, 
+                                                    'status_name'=> 'PENDIENTE', 
+                                                    'amount'=> 6.24, 
+                                                    'currency'=> 'PEN'
+                                                    ],
+                                                    ['id' => 3, 
+                                                    'created_at' => "2020-10-06T19:19:57.000000Z", 
+                                                    'operation_supplier' => 'KFC',
+                                                    'operation_customer' => 'LADY ORTIZ', 
+                                                    'status_id'=> 5, 
+                                                    'status_name'=> 'PAGADO', 
+                                                    'amount'=> 8.65, 
+                                                    'currency'=> 'PEN'
+                                                    ],
+                                                    ['id' => 4, 
+                                                    'created_at' => "2020-10-06T20:19:57.000000Z", 
+                                                    'operation_supplier' => 'BEMBOS',
+                                                    'operation_customer' => 'JOSE QUIROZ', 
+                                                    'status_id'=> 6, 
+                                                    'status_name'=> 'ANULADO', 
+                                                    'amount'=> 5.98, 
+                                                    'currency'=> 'PEN'
+                                                    ],
+                                                    ['id' => 5, 
+                                                    'created_at' => "2020-10-06T20:30:57.000000Z", 
+                                                    'operation_supplier' => 'FRIDAYS',
+                                                    'operation_customer' => 'FRANCISCO SANCHEZ', 
+                                                    'status_id'=> 5, 
+                                                    'status_name'=> 'PAGADO', 
+                                                    'amount'=> 5.74, 
+                                                    'currency'=> 'PEN'
+                                                    ]
+                                                ]
+                                    ]);
+        } else {
+            return response([
+                "message" => "forbidden",
+                "body" => null
+            ], 403);
+        }
     }
 }
