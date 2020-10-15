@@ -17,7 +17,26 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $payments = Payment::whereNull(Payment::TABLE_NAME . '.deleted_at')
+                ->where(Payment::TABLE_NAME . '.users_id', $user->id)
+                ->OrderBy(Payment::TABLE_NAME . '.created_at', 'DESC')
+                ->paginate(env('ITEMS_PAGINATOR'));
+            return response([
+                "status" => !empty($payments) ? true : false,
+                "message" => !empty($payments) ? "list of payments" : "payments not found",
+                "body" => $payments,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -49,7 +68,27 @@ class PaymentsController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $payments = Payment::where(Payment::TABLE_NAME . '.users_id', $user->id)
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->find($id);
+            return response([
+                "status" => !empty($payments) ? true : false,
+                "message" => !empty($payments) ? "find payment" : "payment not found",
+                "body" => $payments,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
