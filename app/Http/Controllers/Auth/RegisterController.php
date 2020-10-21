@@ -84,6 +84,12 @@ class RegisterController extends Controller
                 'password' => Hash::make($params['password']),
                 'activation_token' => Str::random(60)
             ]);
+            if (isset($params['type']) && (int)$params['type'] === 2) {
+                # llamar al servicio crear delivery_user
+            }
+            if (isset($params['type']) && (int)$params['type'] === 3) {
+                # llamar al servicio crear supplier_user
+            }
             // LICENSE PER USER
             $licensePrUser = new LicensePrUser();
             $licensePrUser->users_id = $user->id;
