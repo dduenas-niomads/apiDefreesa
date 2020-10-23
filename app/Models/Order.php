@@ -38,7 +38,8 @@ class Order extends Model
         'purchase_info' => 'array',
         'address_info' => 'array'
     ];    
-    public function getFillable() {
+    public function getFillable() 
+    {
         # code...
         return $this->fillable;
     }

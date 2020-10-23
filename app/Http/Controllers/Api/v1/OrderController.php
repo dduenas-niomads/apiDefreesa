@@ -40,6 +40,35 @@ class OrderController extends Controller
         }
     }
 
+    public function getListMyOrders(Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
+            if (isset($params['date']) && $params['date'] !== "") {
+                $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            }
+            $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')->get();
+            return response([
+                "status" => !empty($orders) ? true : false,
+                "message" => !empty($orders) ? "list of orders" : "orders not found",
+                "body" => $orders,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
