@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use App\Models\MsOrderStatus;
 
 class OrderController extends Controller
 {
@@ -129,6 +130,10 @@ class OrderController extends Controller
                 ->with('orderStatus')
                 ->orderBy('created_at', 'DESC')
                 ->first();
+            if (!is_null($order)) {
+                $msOrderStatus = MsOrderStatus::find($order->status + 1);
+                $order->order_next_status = $msOrderStatus;
+            }
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "find order" : "order not found",
