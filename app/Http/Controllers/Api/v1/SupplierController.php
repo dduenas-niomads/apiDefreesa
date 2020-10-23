@@ -27,6 +27,13 @@ class SupplierController extends Controller
             if (isset($params['key']) && $params['key'] !== "") {
                 $suppliers = $suppliers->where('tags', "LIKE", "%" . $params['key'] . "%");
             }
+            if (isset($params['search']) && !is_null($params['search'])) {
+                $key = $params['search'];
+                $suppliers = $suppliers->where(function($query) use ($key){
+                    $query->where(Supplier::TABLE_NAME . '.name', 'LIKE', '%' . $key . '%');
+                    $query->orWhere(Supplier::TABLE_NAME . '.description', 'LIKE', '%' . $key . '%');
+                });
+            }
             $suppliers = $suppliers->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($suppliers) ? true : false,
