@@ -251,6 +251,10 @@ class OrderController extends Controller
             if ($order->status !== Order::STATUS_FINAL) {
                 $order->status = $order->status + 1;
                 $order->save();
+                if (!is_null($order)) {
+                    $msOrderStatus = MsOrderStatus::find($order->status + 1);
+                    $order->order_next_status = $msOrderStatus;
+                }
             }
             return response([
                 "status" => !empty($order) ? true : false,
