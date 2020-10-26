@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DeliveryUser extends Model
 {
     protected $connection = 'mysql';
-    const TABLE_NAME = 'delivery_users';
+    const TABLE_NAME = 'acl_delivery_users';
     /**
      * The attributes that are mass assignable.
      *
