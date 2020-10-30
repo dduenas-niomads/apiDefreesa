@@ -48,6 +48,7 @@ class OrderController extends Controller
             $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('customer')
+                ->with('orderStatus')
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
