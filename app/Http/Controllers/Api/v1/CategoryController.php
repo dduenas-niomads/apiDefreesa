@@ -67,7 +67,35 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $category = Category::find($id);
+            if (!is_null($category)) {
+                $params = $request->all();
+                $category = new Category();
+                $category = $category->create($params);
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "Categoría creada correctamente" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "Categoría creada correctamente" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -138,8 +166,37 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $category = Category::find($id);
+            if (!is_null($category)) {
+                $params = $request->all();
+                $category->flag_active = Category::STATE_INACTIVE;
+                $category->deleted_at = date("Y-m-d H:i:s");
+                $category->save();
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "Categoría eliminada correctamente" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($category) ? true : false,
+                    "message" => !empty($category) ? "Categoría eliminada correctamente" : "Category not found",
+                    "body" => $category,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 }
