@@ -49,6 +49,30 @@ class CategoryController extends Controller
         }
     }
 
+    public function indexSimple(Reques $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $categories = Category::select('id', 'name')
+                            ->whereNull('deleted_at')
+                            ->where('flag_active', true)
+                            ->orderBy('name', 'asc')
+                            ->get();
+            return response([
+                "status" => !empty($categories) ? true : false,
+                "message" => !empty($categories) ? "list of categories" : "categories not found",
+                "body" => $categories,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "message" => "forbidden",
+                "body" => null
+            ], 403);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
