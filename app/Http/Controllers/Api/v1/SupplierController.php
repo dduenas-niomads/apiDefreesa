@@ -99,9 +99,37 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $supplier = Supplier::find($id);
+            if (!is_null($supplier)) {
+                $params = $request->all();
+                $supplier->fill($params);
+                $supplier->save();
+                return response([
+                    "status" => !empty($supplier) ? true : false,
+                    "message" => !empty($supplier) ? "Proveedor actualizado correctamente" : "Supplier not found",
+                    "body" => $supplier,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($supplier) ? true : false,
+                    "message" => !empty($supplier) ? "Proveedor actualizado correctamente" : "Supplier not found",
+                    "body" => $supplier,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -110,8 +138,37 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $supplier = Supplier::find($id);
+            if (!is_null($supplier)) {
+                $params = $request->all();
+                $supplier->flag_active = Supplier::STATE_INACTIVE;
+                $supplier->deleted_at = date("Y-m-d H:i:s");
+                $supplier->save();
+                return response([
+                    "status" => !empty($supplier) ? true : false,
+                    "message" => !empty($supplier) ? "Proveedor eliminado correctamente" : "Supplier not found",
+                    "body" => $supplier,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($supplier) ? true : false,
+                    "message" => !empty($supplier) ? "Proveedor eliminado correctamente" : "Supplier not found",
+                    "body" => $supplier,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 }

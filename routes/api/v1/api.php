@@ -33,12 +33,16 @@ Route::prefix('/licenses')->group(function() {
 // Categories
 Route::prefix('/categories')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\CategoryController@index');
+    Route::middleware('auth:api')->post('/', 'Api\v1\CategoryController@store');
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\CategoryController@update');
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\CategoryController@destroy');
 });
 
 // Suppliers
 Route::prefix('/suppliers')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\SupplierController@index');
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\SupplierController@update');
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\SupplierController@destroy');
 });
 
 // Products

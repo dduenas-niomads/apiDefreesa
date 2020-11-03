@@ -21,8 +21,10 @@ class DeliveryUserController extends Controller
         if (!is_null($user)) {
             $deliveryUser = DeliveryUser::whereNull('deleted_at')->get();
             return response([
-                "message" => "list of delivery users",
-                "body" => $deliveryUser
+                "status" => !empty($deliveryUser) ? true : false,
+                "message" => !empty($deliveryUser) ? "list of categories" : "categories not found",
+                "body" => $deliveryUser,
+                "redirect" => false
             ], 200);
         } else {
             return response([
