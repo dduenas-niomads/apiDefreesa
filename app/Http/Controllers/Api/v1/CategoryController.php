@@ -69,25 +69,15 @@ class CategoryController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $category = Category::find($id);
-            if (!is_null($category)) {
-                $params = $request->all();
-                $category = new Category();
-                $category = $category->create($params);
-                return response([
-                    "status" => !empty($category) ? true : false,
-                    "message" => !empty($category) ? "Categoría creada correctamente" : "Category not found",
-                    "body" => $category,
-                    "redirect" => false
-                ], 200);
-            } else {
-                return response([
-                    "status" => !empty($category) ? true : false,
-                    "message" => !empty($category) ? "Categoría creada correctamente" : "Category not found",
-                    "body" => $category,
-                    "redirect" => false
-                ], 404);
-            }
+            $params = $request->all();
+            $category = new Category();
+            $category = $category->create($params);
+            return response([
+                "status" => !empty($category) ? true : false,
+                "message" => !empty($category) ? "created category" : "category cannot be created",
+                "body" => $category,
+                "redirect" => false
+            ], 201);
         } else {
             return response([
                 "status" => false,
