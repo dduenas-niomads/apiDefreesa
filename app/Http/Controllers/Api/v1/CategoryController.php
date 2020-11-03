@@ -74,7 +74,7 @@ class CategoryController extends Controller
             $category = $category->create($params);
             return response([
                 "status" => !empty($category) ? true : false,
-                "message" => !empty($category) ? "created category" : "category cannot be created",
+                "message" => !empty($category) ? "Categoría creada" : "No se pudo crear la categoría",
                 "body" => $category,
                 "redirect" => false
             ], 201);
