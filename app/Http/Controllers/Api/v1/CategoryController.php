@@ -49,7 +49,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function indexSimple(Reques $request)
+    public function indexSimple(Request $request)
     {
         $user = Auth::user();
         if (!is_null($user)) {
