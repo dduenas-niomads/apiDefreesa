@@ -36,7 +36,7 @@ class Category extends Model
         return date('d/m/Y H:i:s', strtotime($value));
 	}
 	public function getUpdatedAtAttribute($value) {
-        return date('d/m/Y H:i:s', strtotime($value));
+        return date('dmYHis', strtotime($value));
 	}
     /**
      * The attributes that should be hidden for arrays.
