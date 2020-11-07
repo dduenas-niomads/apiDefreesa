@@ -15,9 +15,38 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $users = User::whereNull('deleted_at');
+            if (!isset($params['all'])) {
+                $users = $users->where('active', true);
+            }
+            if (isset($params['search']) && !is_null($params['search'])) {
+                $key = $params['search'];
+                $users = $users->where(function($query) use ($key){
+                    $query->where(User::TABLE_NAME . '.name', 'LIKE', '%' . $key . '%');
+                    $query->orWhere(User::TABLE_NAME . '.lastname', 'LIKE', '%' . $key . '%');
+                });
+            }
+            if (isset($params['orderBy']) && !is_null($params['orderBy'])) {
+                $users = $users->orderBy($params['orderBy'], $params['orderDir']);
+            }
+            $users = $users->paginate(env('ITEMS_PAGINATOR'));
+            return response([
+                "status" => !empty($users) ? true : false,
+                "message" => !empty($users) ? "list of users" : "users not found",
+                "body" => $users,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "message" => "forbidden",
+                "body" => null
+            ], 403);
+        }
     }
 
     /**
