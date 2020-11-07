@@ -80,6 +80,7 @@ class RegisterController extends Controller
                 'name' => $params['name'],
                 'lastname' => $params['lastname'],
                 'email' => $params['email'],
+                'type_document' => $params['type_document'],
                 'phone' => isset($params['phone']) ? $params['phone'] : null,
                 'password' => Hash::make($params['password']),
                 'activation_token' => Str::random(60)
