@@ -34,8 +34,7 @@ class SupplierController extends Controller
                     $query->orWhere(Supplier::TABLE_NAME . '.description', 'LIKE', '%' . $key . '%');
                 });
             }
-            $suppliers = $suppliers->with()
-                ->paginate(env('ITEMS_PAGINATOR'));
+            $suppliers = $suppliers->with('category')->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($suppliers) ? true : false,
                 "message" => !empty($suppliers) ? "list of suppliers" : "suppliers not found",
