@@ -101,9 +101,6 @@
 			table-layout:fixed !important;
 		}
 	/*
-	@tab Page
-	@section Heading 1
-	@style heading 1
 	*/
 		h1{
 			/*@editable*/color:#222222;
@@ -116,9 +113,6 @@
 			/*@editable*/text-align:center;
 		}
 	/*
-	@tab Page
-	@section Heading 2
-	@style heading 2
 	*/
 		h2{
 			/*@editable*/color:#222222;
@@ -131,9 +125,6 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Page
-	@section Heading 3
-	@style heading 3
 	*/
 		h3{
 			/*@editable*/color:#444444;
@@ -146,9 +137,6 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Page
-	@section Heading 4
-	@style heading 4
 	*/
 		h4{
 			/*@editable*/color:#949494;
@@ -161,8 +149,6 @@
 			/*@editable*/text-align:center;
 		}
 	/*
-	@tab Header
-	@section Header Container Style
 	*/
 		#templateHeader{
 			/*@editable*/background-color:#e6e7e8;
@@ -176,8 +162,6 @@
 			/*@editable*/padding-bottom:0px;
 		}
 	/*
-	@tab Header
-	@section Header Interior Style
 	*/
 		.headerContainer{
 			/*@editable*/background-color:transparent;
@@ -191,8 +175,6 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Header
-	@section Header Text
 	*/
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
 			/*@editable*/color:#757575;
@@ -202,8 +184,6 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Header
-	@section Header Link
 	*/
 		.headerContainer .mcnTextContent a,.headerContainer .mcnTextContent p a{
 			/*@editable*/color:#007C89;
@@ -211,8 +191,6 @@
 			/*@editable*/text-decoration:underline;
 		}
 	/*
-	@tab Body
-	@section Body Container Style
 	*/
 		#templateBody{
 			/*@editable*/background-color:#e6e7e8;
@@ -226,8 +204,6 @@
 			/*@editable*/padding-bottom:54px;
 		}
 	/*
-	@tab Body
-	@section Body Interior Style
 	*/
 		.bodyContainer{
 			/*@editable*/background-color:transparent;
@@ -241,8 +217,6 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Body
-	@section Body Text
 	*/
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
 			/*@editable*/color:#757575;
@@ -252,8 +226,6 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Body
-	@section Body Link
 	*/
 		.bodyContainer .mcnTextContent a,.bodyContainer .mcnTextContent p a{
 			/*@editable*/color:#007C89;
@@ -261,8 +233,6 @@
 			/*@editable*/text-decoration:underline;
 		}
 	/*
-	@tab Footer
-	@section Footer Style
 	*/
 		#templateFooter{
 			/*@editable*/background-color:#333333;
@@ -276,8 +246,6 @@
 			/*@editable*/padding-bottom:63px;
 		}
 	/*
-	@tab Footer
-	@section Footer Interior Style
 	*/
 		.footerContainer{
 			/*@editable*/background-color:transparent;
@@ -291,8 +259,6 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Footer
-	@section Footer Text
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
 			/*@editable*/color:#FFFFFF;
@@ -302,8 +268,6 @@
 			/*@editable*/text-align:center;
 		}
 	/*
-	@tab Footer
-	@section Footer Link
 	*/
 		.footerContainer .mcnTextContent a,.footerContainer .mcnTextContent p a{
 			/*@editable*/color:#FFFFFF;
@@ -400,9 +364,6 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 1
-	@tip Make the first-level headings larger in size for better readability on small screens.
 	*/
 		h1{
 			/*@editable*/font-size:30px !important;
