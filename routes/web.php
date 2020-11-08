@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return response([
-        "message" => "defreesa api"
-    ]);
+    return view("welcome");
 });
 
 Route::get('/login', function () {
