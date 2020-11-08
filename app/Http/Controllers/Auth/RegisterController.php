@@ -140,12 +140,14 @@ class RegisterController extends Controller
         $user->activation_token = null;
         $user->save();
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Nice! Your account is active. Please go to niomads.com to login :)',
-            'body'    => null,
-            'redirect' => false
-        ], 200);
+        return view('welcome', compact('user'));
+
+        // return response()->json([
+        //     'status'  => true,
+        //     'message' => 'Nice! Your account is active. Please go to niomads.com to login :)',
+        //     'body'    => null,
+        //     'redirect' => false
+        // ], 200);
     }
 
     public function forgotPassword(Request $request)
