@@ -67,7 +67,25 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $supplier = new Supplier();
+            $supplier = $supplier->create($params);
+            return response([
+                "status" => !empty($supplier) ? true : false,
+                "message" => !empty($supplier) ? "Proveedor creado" : "No se pudo crear el proveedor",
+                "body" => $supplier,
+                "redirect" => false
+            ], 201);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
