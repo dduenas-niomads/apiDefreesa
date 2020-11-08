@@ -111,14 +111,14 @@ class RegisterController extends Controller
 
             return response()->json([
                 'status'  => true,
-                'message' => 'Nice! Your account is created. Please check your email account to validate your account :)',
+                'message' => '¡Genial! Tu cuenta ha sido creada. Por favor, revisa tu correo electrónico para activar tu cuenta.',
                 'body'    => null,
                 'redirect' => false
             ], 200);
         } else {
             return response()->json([
                 'status'  => false,
-                'message' => 'Your account cannot be created. This email account already exists',
+                'message' => 'Tu cuenta no puede ser creada. Este correo ya existe actualmente en Defreesa',
                 'body'    => null,
                 'redirect' => false
             ], 400);
@@ -131,7 +131,7 @@ class RegisterController extends Controller
         if (!$user) {
             return response()->json([
                 'status'  => false,
-                'message' => 'This activation token is invalid.',
+                'message' => 'El token de activación es inválido',
                 'body'    => null,
                 'redirect' => false
             ], 404);
