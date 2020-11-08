@@ -47,7 +47,7 @@ class SignupActivate extends Notification
             ->line('Thanks for signup! Please before you begin, you must confirm your account.')
             ->action('Confirm Account', url($params['url']))
             ->line('Thank you for using our application!')
-            ->view('mails.signup', $params);
+            ->view('mails.signup', [ "params" => $params] );
     }
 
     /**
