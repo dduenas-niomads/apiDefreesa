@@ -372,9 +372,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 2
-	@tip Make the second-level headings larger in size for better readability on small screens.
+	 Mobile Styles
+	 Heading 2
+	 Make the second-level headings larger in size for better readability on small screens.
 	*/
 		h2{
 			/*@editable*/font-size:26px !important;
@@ -383,9 +383,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 3
-	@tip Make the third-level headings larger in size for better readability on small screens.
+	 Mobile Styles
+	 Heading 3
+	 Make the third-level headings larger in size for better readability on small screens.
 	*/
 		h3{
 			/*@editable*/font-size:20px !important;
@@ -394,9 +394,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 4
-	@tip Make the fourth-level headings larger in size for better readability on small screens.
+	 Mobile Styles
+	 Heading 4
+	 Make the fourth-level headings larger in size for better readability on small screens.
 	*/
 		h4{
 			/*@editable*/font-size:18px !important;
@@ -405,9 +405,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Boxed Text
-	@tip Make the boxed text larger in size for better readability on small screens. We recommend a font size of at least 16px.
+	 Mobile Styles
+	 Boxed Text
+	 Make the boxed text larger in size for better readability on small screens. We recommend a font size of at least 16px.
 	*/
 		.mcnBoxedTextContentContainer .mcnTextContent,.mcnBoxedTextContentContainer .mcnTextContent p{
 			/*@editable*/font-size:14px !important;
@@ -416,9 +416,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Header Text
-	@tip Make the header text larger in size for better readability on small screens.
+	 Mobile Styles
+	 Header Text
+	 Make the header text larger in size for better readability on small screens.
 	*/
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
 			/*@editable*/font-size:16px !important;
@@ -427,9 +427,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Body Text
-	@tip Make the body text larger in size for better readability on small screens. We recommend a font size of at least 16px.
+	 Mobile Styles
+	 Body Text
+	 Make the body text larger in size for better readability on small screens. We recommend a font size of at least 16px.
 	*/
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
 			/*@editable*/font-size:16px !important;
@@ -438,9 +438,9 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Footer Text
-	@tip Make the footer content text larger in size for better readability on small screens.
+	 Mobile Styles
+	 Footer Text
+	 Make the footer content text larger in size for better readability on small screens.
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
 			/*@editable*/font-size:14px !important;
