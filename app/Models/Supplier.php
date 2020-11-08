@@ -34,6 +34,12 @@ class Supplier extends Model
         # code...
         return $this->fillable;
     }
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Category', 'bs_categories_id')
+            ->select('id', 'name')
+            ->whereNull('deleted_at');
+    }
     /**
      * The attributes that should be hidden for arrays.
      *
