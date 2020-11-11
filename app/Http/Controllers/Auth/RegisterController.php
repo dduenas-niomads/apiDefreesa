@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use App\DeliveryUser;
+use App\Consumer;
 use App\Models\LicensePrUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -82,11 +83,24 @@ class RegisterController extends Controller
                 'lastname' => $params['lastname'],
                 'email' => $params['email'],
                 'type_document' => $params['type_document'],
+                'type' => $params['type'],
                 'document_number' => $params['document_number'],
                 'phone' => isset($params['phone']) ? $params['phone'] : null,
                 'password' => Hash::make($params['password']),
                 'activation_token' => Str::random(60)
             ]);
+            if (isset($params['type']) && (int)$params['type'] === 1) {
+                $consumer = new Consumer();
+                $consumer->users_id = $user->id;
+                $consumer->name = $user->name;
+                $consumer->lastname = $user->lastname;
+                $consumer->email = $user->email;
+                $consumer->phone = $user->phone;
+                $consumer->type_document = $user->type_document;
+                $consumer->document_number = $user->document_number;
+                $consumer->password = $user->password;
+                $consumer->save();
+            }            
             if (isset($params['type']) && (int)$params['type'] === 2) {
                 $deliveryUser = new DeliveryUser();
                 $deliveryUser->users_id = $user->id;
@@ -94,6 +108,8 @@ class RegisterController extends Controller
                 $deliveryUser->lastname = $user->lastname;
                 $deliveryUser->email = $user->email;
                 $deliveryUser->phone = $user->phone;
+                $deliveryUser->type_document = $user->type_document;
+                $deliveryUser->document_number = $user->document_number;
                 $deliveryUser->password = $user->password;
                 $deliveryUser->save();
             }

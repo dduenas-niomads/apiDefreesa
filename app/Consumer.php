@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryUser extends Model
+class Consumer extends Model
 {
     protected $connection = 'mysql';
-    const TABLE_NAME = 'acl_delivery_users';
+    const TABLE_NAME = 'acl_consumer_users';
     /**
      * The attributes that are mass assignable.
      *
@@ -16,9 +16,9 @@ class DeliveryUser extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'name', 'users_id', 'lastname', 'email', 'password', 'active',
+        'name', 'users_id','lastname', 'email', 'password', 'active', 'radio', 'type_document',
         'activation_token', 'forgot_password_token',
-        'phone', 'document_number'
+        'phone', 'document_number', 'address_info'
     ];
 
     /**
