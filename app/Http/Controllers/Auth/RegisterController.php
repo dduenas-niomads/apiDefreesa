@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\DeliveryUser;
 use App\Models\LicensePrUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -87,7 +88,14 @@ class RegisterController extends Controller
                 'activation_token' => Str::random(60)
             ]);
             if (isset($params['type']) && (int)$params['type'] === 2) {
-                # llamar al servicio crear delivery_user
+                $deliveryUser = new DeliveryUser();
+                $deliveryUser->users_id = $user->id;
+                $deliveryUser->name = $user->name;
+                $deliveryUser->lastname = $user->lastname;
+                $deliveryUser->email = $user->email;
+                $deliveryUser->phone = $user->phone;
+                $deliveryUser->password = $user->password;
+                $deliveryUser->save();
             }
             if (isset($params['type']) && (int)$params['type'] === 3) {
                 # llamar al servicio crear supplier_user

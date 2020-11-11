@@ -16,7 +16,7 @@ class DeliveryUser extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'name', 'lastname', 'email', 'password', 'active',
+        'name', 'users_id', 'lastname', 'email', 'password', 'active',
         'activation_token', 'forgot_password_token',
         'phone', 'document_number', 'address_info'
     ];
@@ -39,5 +39,12 @@ class DeliveryUser extends Model
         'email_verified_at' => 'datetime',
         'address_info' => 'array'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'users_id')
+            ->whereNull('deleted_at');
+    }
+
     protected $table = self::TABLE_NAME;
 }
