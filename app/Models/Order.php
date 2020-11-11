@@ -23,7 +23,7 @@ class Order extends Model
         'id','users_id','details_info','total','total_info',
         'bs_suppliers_id','status','commentary_info','purchase_info',
         'address_info','commentary','tips','type_document','document_number',
-        'delivery_status',
+        'delivery_status','pickup_address_info','type_order',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -36,6 +36,7 @@ class Order extends Model
         'details_info' => 'array',
         'total_info' => 'array',
         'purchase_info' => 'array',
+        'pickup_address_info' => 'array',
         'address_info' => 'array'
     ];    
     public function getFillable() 

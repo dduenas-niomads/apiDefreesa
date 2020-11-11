@@ -17,7 +17,7 @@ class Category extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','color','name','description','url_image',
+        'id','color','name','description','url_image','flag_courier',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];

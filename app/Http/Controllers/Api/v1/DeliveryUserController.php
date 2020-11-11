@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\DeliveryUser;
+use App\User;
 
 class DeliveryUserController extends Controller
 {
@@ -54,28 +55,23 @@ class DeliveryUserController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $request->validate([
-                'name'=>'required',
-                'email'=>'required',
-                'password'=>'required'
-            ]);
-            $deliveryUser = new DeliveryUser([
-                'name' => $request->get('name'),
-                'last_name' => $request->get('last_name'),
-                'email' => $request->get('email'),
-                'password' => Hash::make($request['password'])
-            ]);
-            $deliveryUser->save();
+            $params = $request->all();
+            $deliveryUser = new DeliveryUser();
+            $deliveryUser = $deliveryUser->create($params);
             return response([
-                    "message" => "delivery user created",
-                    "body" => $deliveryUser
-                ], 201);
-            }else {
-                return response([
-                    "message" => "cannot create delivery user",
-                    "body" => null
-                ], 403);
-            }    
+                "status" => !empty($deliveryUser) ? true : false,
+                "message" => !empty($deliveryUser) ? "Repartidor creado" : "No se pudo crear el Repartidor",
+                "body" => $deliveryUser,
+                "redirect" => false
+            ], 201);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
