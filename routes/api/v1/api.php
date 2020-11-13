@@ -74,6 +74,11 @@ Route::prefix('/delivery-user')->group(function() {
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\DeliveryUserController@update');    
 });
 
+// Consumers
+Route::prefix('/consumers')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\ConsumerController@index'); 
+});
+
 // Payments
 Route::prefix('/payments')->group(function() {
     Route::middleware('auth:api')->get('/my-founds', 'Api\v1\PaymentsController@myFounds');

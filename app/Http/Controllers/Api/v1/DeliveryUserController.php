@@ -16,14 +16,16 @@ class DeliveryUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $deliveryUser = DeliveryUser::whereNull('deleted_at')->get();
+            $params = $request->all();
+            $deliveryUser = DeliveryUser::whereNull('deleted_at')
+                        ->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($deliveryUser) ? true : false,
-                "message" => !empty($deliveryUser) ? "list of categories" : "categories not found",
+                "message" => !empty($deliveryUser) ? "list of delivery users" : "delivery users not found",
                 "body" => $deliveryUser,
                 "redirect" => false
             ], 200);
