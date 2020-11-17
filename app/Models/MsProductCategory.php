@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class MsProductCategory extends Model
 {
     protected $connection = 'mysql';
-    const TABLE_NAME = 'bs_products';
+    const TABLE_NAME = 'bs_ms_products_categories';
     const STATE_ACTIVE = true;
     const STATE_INACTIVE = false;
     /**
@@ -17,8 +17,7 @@ class Product extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','bs_suppliers_id','bs_ms_products_categories_id',
-        'currency','price','name','description','url_image',
+        'id','name','description',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -28,14 +27,7 @@ class Product extends Model
      * @var array
      */
     protected $casts = [
-    ];
-
-    public function category()
-    {
-        return $this->belongsTo('App\Models\MsProductCategory', 'bs_ms_products_categories_id')
-            ->whereNull('deleted_at');
-    }
-
+    ];    
     public function getFillable() {
         # code...
         return $this->fillable;

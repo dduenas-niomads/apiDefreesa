@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
+use App\Consumer;
+use App\User;
 
-class ProductController extends Controller
+class ConsumerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,15 +21,12 @@ class ProductController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $params = $request->all();
-            $products = Product::whereNull('deleted_at');
-            if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
-                $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
-            }
-            $products = $products->with('category')->paginate(env('ITEMS_PAGINATOR'));
+            $consumer = Consumer::whereNull('deleted_at')
+                        ->paginate(env('ITEMS_PAGINATOR'));
             return response([
-                "status" => !empty($products) ? true : false,
-                "message" => !empty($products) ? "list of products" : "products not found",
-                "body" => $products,
+                "status" => !empty($consumer) ? true : false,
+                "message" => !empty($consumer) ? "list of consumers" : "consumers not found",
+                "body" => $consumer,
                 "redirect" => false
             ], 200);
         } else {
@@ -46,7 +44,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return null;
+        //
     }
 
     /**
@@ -57,7 +55,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return null;
+        //
     }
 
     /**
@@ -66,9 +64,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
-        return null;
+        //
     }
 
     /**
@@ -79,7 +78,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        return null;
+        // 
     }
 
     /**
@@ -89,9 +88,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($id, Request $request)
     {
-        return null;
+        //
     }
 
     /**
@@ -102,6 +101,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        return null;
+        //
     }
+    
 }
