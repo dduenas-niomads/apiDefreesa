@@ -26,7 +26,7 @@ class ProductController extends Controller
             }
             $products = $products->with('category');
             if (isset($params['allItems']) && $params['allItems']) {
-                $products = $products->get();
+                $products = $products->orderBy('bs_ms_products_category_id')->get();
                 $category = null;
                 $products_ = [ "data" => [] ];
                 foreach ($products as $key => $value) {
