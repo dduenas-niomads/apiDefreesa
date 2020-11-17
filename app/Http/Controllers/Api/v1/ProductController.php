@@ -27,9 +27,21 @@ class ProductController extends Controller
             $products = $products->with('category');
             if (isset($params['allItems']) && $params['allItems']) {
                 $products = $products->get();
+                $category = null;
+                $products_ = [ "data" => [] ];
                 foreach ($products as $key => $value) {
-                    dd($value);
+                    if (!is_null($category)) {
+                        if ($category->id != $value->category->id) {
+                            $category = $value->category;
+                            array_push($products_["data"], $category);
+                        }
+                    } else {
+                        $category = $value->category;
+                        array_push($products_["data"], $category);
+                    }
+                    array_push($products_["data"], $value);
                 }
+                $products = $products_;
             } else {
                 $products = $products->paginate(env('ITEMS_PAGINATOR'));
             }
