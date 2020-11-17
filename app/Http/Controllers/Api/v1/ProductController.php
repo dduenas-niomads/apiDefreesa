@@ -30,6 +30,10 @@ class ProductController extends Controller
             } else {
                 $products = $products->paginate(env('ITEMS_PAGINATOR'));
             }
+            foreach ($products as $key => $value) {
+                dd($value);
+            }
+
             return response([
                 "status" => !empty($products) ? true : false,
                 "message" => !empty($products) ? "list of products" : "products not found",
