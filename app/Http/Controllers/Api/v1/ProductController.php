@@ -26,13 +26,13 @@ class ProductController extends Controller
             }
             $products = $products->with('category');
             if (isset($params['allItems']) && $params['allItems']) {
-                $products = $products->paginate(env('ITEMS_PAGINATOR_UNLIMITED'));;
+                $products = $products->get();
+                foreach ($products as $key => $value) {
+                    dd($value);
+                }
             } else {
                 $products = $products->paginate(env('ITEMS_PAGINATOR'));
             }
-            // foreach ($products as $key => $value) {
-            //     dd($value);
-            // }
 
             return response([
                 "status" => !empty($products) ? true : false,
