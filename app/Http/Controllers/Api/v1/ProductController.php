@@ -24,7 +24,12 @@ class ProductController extends Controller
             if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
                 $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
             }
-            $products = $products->with('category')->paginate(env('ITEMS_PAGINATOR'));
+            $products = $products->with('category');
+            if (isset($params['allItems']) && $params['allItems']) {
+                $products = $products->paginate(env('ITEMS_PAGINATOR_UNLIMITED'));;
+            } else {
+                $products = $products->paginate(env('ITEMS_PAGINATOR'));
+            }
             return response([
                 "status" => !empty($products) ? true : false,
                 "message" => !empty($products) ? "list of products" : "products not found",
