@@ -30,9 +30,9 @@ class ProductController extends Controller
             } else {
                 $products = $products->paginate(env('ITEMS_PAGINATOR'));
             }
-            foreach ($products as $key => $value) {
-                dd($value['data']);
-            }
+            // foreach ($products as $key => $value) {
+            //     dd($value);
+            // }
 
             return response([
                 "status" => !empty($products) ? true : false,
