@@ -31,7 +31,7 @@ class ProductController extends Controller
                 $products = $products->paginate(env('ITEMS_PAGINATOR'));
             }
             foreach ($products as $key => $value) {
-                dd($value->data);
+                dd($value['data']);
             }
 
             return response([
