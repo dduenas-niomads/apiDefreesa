@@ -112,6 +112,7 @@ class RegisterController extends Controller
                 $deliveryUser->type_document = $user->type_document;
                 $deliveryUser->document_number = $user->document_number;
                 $deliveryUser->password = $user->password;
+                $deliveryUser->activation_token = $user->activation_token;
                 $deliveryUser->save();
             }
             if (isset($params['type']) && (int)$params['type'] === 3) {
