@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use App\User;
 use App\DeliveryUser;
 use App\Consumer;
+use App\Partner;
 use App\Models\LicensePrUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -111,10 +112,17 @@ class RegisterController extends Controller
                 $deliveryUser->type_document = $user->type_document;
                 $deliveryUser->document_number = $user->document_number;
                 $deliveryUser->password = $user->password;
+                $deliveryUser->activation_token = $user->activation_token;
                 $deliveryUser->save();
             }
             if (isset($params['type']) && (int)$params['type'] === 3) {
-                # llamar al servicio crear supplier_user
+                $partner = new Partner();
+                $partner->users_id = $user->id;
+                $partner->name = $user->name;
+                $partner->phone = $user->phone;
+                $partner->ruc = $user->document_number;
+                $partner->password = $user->password;
+                $partner->save();
             }
             // LICENSE PER USER
             $licensePrUser = new LicensePrUser();

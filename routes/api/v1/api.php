@@ -79,6 +79,11 @@ Route::prefix('/consumers')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\ConsumerController@index'); 
 });
 
+// Partners
+Route::prefix('/partners')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\PartnerController@index'); 
+});
+
 // Payments
 Route::prefix('/payments')->group(function() {
     Route::middleware('auth:api')->get('/my-founds', 'Api\v1\PaymentsController@myFounds');
