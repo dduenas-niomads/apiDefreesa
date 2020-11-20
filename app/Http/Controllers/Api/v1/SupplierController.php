@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Supplier;
+use App\Partner;
 
 class SupplierController extends Controller
 {
@@ -180,6 +181,31 @@ class SupplierController extends Controller
                     "redirect" => false
                 ], 404);
             }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
+    public function getListMySuppliers(Request $request)
+    {
+        $partner = Auth::user();
+        if (!is_null($partner)) {
+            $params = $request->all();
+            $suppliers = Supplier::whereNull(Supplier::TABLE_NAME . '.deleted_at')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $partner->id);
+
+            $suppliers = $suppliers->get();
+            return response([
+                "status" => !empty($suppliers) ? true : false,
+                "message" => !empty($suppliers) ? "list of suppliers" : "suppliers not found",
+                "body" => $suppliers,
+                "redirect" => false
+            ], 200);
         } else {
             return response([
                 "status" => false,

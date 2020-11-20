@@ -17,7 +17,7 @@ class Supplier extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','bs_categories_id','name','description','url_image',
+        'id','bs_categories_id','name','description','url_image','acl_partner_users_id',
         'image_carrousel','phone',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
@@ -45,5 +45,11 @@ class Supplier extends Model
      *
      * @var array
      */
+    public function partner()
+    {
+        return $this->belongsTo('App\Partner', 'acl_partner_users_id')
+            ->whereNull('deleted_at');
+    }
+
     protected $table = self::TABLE_NAME;
 }
