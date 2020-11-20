@@ -46,5 +46,11 @@ class Partner extends Model
             ->whereNull('deleted_at');
     }
 
+    public function supplier()
+    {
+        return $this->hasOne('App\Models\Supplier', 'acl_partner_user_id')
+            ->whereNull('deleted_at');
+    }
+
     protected $table = self::TABLE_NAME;
 }
