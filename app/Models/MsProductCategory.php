@@ -17,7 +17,7 @@ class MsProductCategory extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','name','description',
+        'id','name','description','flag_type_label',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
