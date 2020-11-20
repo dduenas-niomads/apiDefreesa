@@ -19,6 +19,7 @@ class Product extends Model
         //Table Rows
         'id','bs_suppliers_id','bs_ms_products_categories_id',
         'currency','price','name','description','url_image',
+        'flag_type_label',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
