@@ -50,6 +50,30 @@ class SupplierController extends Controller
         }
     }
 
+    public function indexSimple(Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $suppliers = Supplier::select('id', 'name')
+                            ->whereNull('deleted_at')
+                            ->where('flag_active', true)
+                            ->orderBy('name', 'asc')
+                            ->get();
+            return response([
+                "status" => !empty($suppliers) ? true : false,
+                "message" => !empty($suppliers) ? "list of suppliers" : "suppliers not found",
+                "body" => $suppliers,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "message" => "forbidden",
+                "body" => null
+            ], 403);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -75,7 +99,7 @@ class SupplierController extends Controller
             $supplier = $supplier->create($params);
             return response([
                 "status" => !empty($supplier) ? true : false,
-                "message" => !empty($supplier) ? "Proveedor creado" : "No se pudo crear el proveedor",
+                "message" => !empty($supplier) ? "Local afiliado creado" : "No se pudo crear el Local afiliado",
                 "body" => $supplier,
                 "redirect" => false
             ], 201);
@@ -129,14 +153,14 @@ class SupplierController extends Controller
                 $supplier->save();
                 return response([
                     "status" => !empty($supplier) ? true : false,
-                    "message" => !empty($supplier) ? "Proveedor actualizado correctamente" : "Supplier not found",
+                    "message" => !empty($supplier) ? "Local afiliado actualizado correctamente" : "Supplier not found",
                     "body" => $supplier,
                     "redirect" => false
                 ], 200);
             } else {
                 return response([
                     "status" => !empty($supplier) ? true : false,
-                    "message" => !empty($supplier) ? "Proveedor actualizado correctamente" : "Supplier not found",
+                    "message" => !empty($supplier) ? "Local afiliado actualizado correctamente" : "Supplier not found",
                     "body" => $supplier,
                     "redirect" => false
                 ], 404);
@@ -169,14 +193,14 @@ class SupplierController extends Controller
                 $supplier->save();
                 return response([
                     "status" => !empty($supplier) ? true : false,
-                    "message" => !empty($supplier) ? "Proveedor eliminado correctamente" : "Supplier not found",
+                    "message" => !empty($supplier) ? "Local afiliado eliminado correctamente" : "Supplier not found",
                     "body" => $supplier,
                     "redirect" => false
                 ], 200);
             } else {
                 return response([
                     "status" => !empty($supplier) ? true : false,
-                    "message" => !empty($supplier) ? "Proveedor eliminado correctamente" : "Supplier not found",
+                    "message" => !empty($supplier) ? "Local afiliado eliminado correctamente" : "Supplier not found",
                     "body" => $supplier,
                     "redirect" => false
                 ], 404);

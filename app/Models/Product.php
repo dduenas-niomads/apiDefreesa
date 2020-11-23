@@ -37,6 +37,12 @@ class Product extends Model
             ->whereNull('deleted_at');
     }
 
+    public function supplier()
+    {
+        return $this->belongsTo('App\Models\Supplier', 'bs_suppliers_id')
+            ->whereNull('deleted_at')
+            ->select('id', 'name');
+    }
     public function getFillable() {
         # code...
         return $this->fillable;
