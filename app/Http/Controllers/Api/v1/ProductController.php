@@ -125,4 +125,50 @@ class ProductController extends Controller
     {
         return null;
     }
+
+    public function getListMyProducts(Request $request)
+    {
+        $partner = Auth::user();
+        if (!is_null($partner)) {
+            $params = $request->all();
+            $products = Product::whereNull('deleted_at')
+            ->where(Product::TABLE_NAME . '.acl_partner_users_id', $partner->id);
+            if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
+                $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
+            }
+            $products = $products->with('category');
+            $products = $products->with('supplier');
+            if (isset($params['allItems']) && $params['allItems']) {
+                $products = $products->orderBy('bs_ms_products_categories_id')->get();
+                $category = null;
+                $products_ = [ "data" => [] ];
+                foreach ($products as $key => $value) {
+                    if (!is_null($category)) {
+                        if ($category->id != $value->category->id) {
+                            $category = $value->category;
+                            array_push($products_["data"], $category);
+                        }
+                    } else {
+                        $category = $value->category;
+                        array_push($products_["data"], $category);
+                    }
+                    array_push($products_["data"], $value);
+                }
+                $products = $products_;
+            } else {
+                $products = $products->paginate(env('ITEMS_PAGINATOR'));
+            }
+            return response([
+                "status" => !empty($products) ? true : false,
+                "message" => !empty($products) ? "list of products" : "products not found",
+                "body" => $products,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "message" => "forbidden",
+                "body" => null
+            ], 403);
+        }
+    }
 }
