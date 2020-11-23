@@ -42,6 +42,7 @@ Route::prefix('/categories')->group(function() {
 
 // Suppliers
 Route::prefix('/suppliers')->group(function() {
+    Route::middleware('auth:api')->get('/simple', 'Api\v1\SupplierController@indexSimple');
     Route::middleware('auth:api')->get('/', 'Api\v1\SupplierController@index');
     Route::middleware('auth:api')->get('/my-suppliers', 'Api\v1\SupplierController@getListMySuppliers');
     Route::middleware('auth:api')->post('/', 'Api\v1\SupplierController@store');

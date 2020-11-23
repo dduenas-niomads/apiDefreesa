@@ -25,6 +25,7 @@ class ProductController extends Controller
                 $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
             }
             $products = $products->with('category');
+            $products = $products->with('supplier');
             if (isset($params['allItems']) && $params['allItems']) {
                 $products = $products->orderBy('bs_ms_products_categories_id')->get();
                 $category = null;
