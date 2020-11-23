@@ -53,6 +53,7 @@ Route::prefix('/suppliers')->group(function() {
 // Products
 Route::prefix('/products')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\ProductController@index');
+    Route::middleware('auth:api')->get('/my-products', 'Api\v1\ProductController@getListMyProducts');
 });
 
 // Orders
