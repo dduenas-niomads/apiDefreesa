@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\MsProductCategory;
 
 class ProductController extends Controller
 {
@@ -24,8 +25,7 @@ class ProductController extends Controller
             if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
                 $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
             }
-            $products = $products->with('category');
-            $products = $products->with('supplier');
+            $products = $products->with('category','supplier');
             if (isset($params['allItems']) && $params['allItems']) {
                 $products = $products->orderBy('bs_ms_products_categories_id')->get();
                 $category = null;
@@ -128,16 +128,14 @@ class ProductController extends Controller
 
     public function getListMyProducts(Request $request)
     {
-        $partner = Auth::user();
-        if (!is_null($partner)) {
+        $user = Auth::user();
+        if (!is_null($user)) {
             $params = $request->all();
-            $products = Product::whereNull('deleted_at')
-            ->where(Product::TABLE_NAME . '.acl_partner_users_id', $partner->id);
+            $products = Product::whereNull('deleted_at');
             if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
                 $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
             }
-            $products = $products->with('category');
-            $products = $products->with('supplier');
+            $products = $products->with('category','supplier');
             if (isset($params['allItems']) && $params['allItems']) {
                 $products = $products->orderBy('bs_ms_products_categories_id')->get();
                 $category = null;

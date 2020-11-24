@@ -17,7 +17,7 @@ class Product extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','bs_suppliers_id','bs_ms_products_categories_id','acl_partner_users_id',
+        'id','bs_suppliers_id','bs_ms_products_categories_id',
         'currency','price','name','description','url_image',
         'flag_type_label',
         //Audit 
@@ -42,12 +42,6 @@ class Product extends Model
         return $this->belongsTo('App\Models\Supplier', 'bs_suppliers_id')
             ->whereNull('deleted_at')
             ->select('id', 'name');
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo('App\Partner', 'acl_partner_users_id')
-            ->whereNull('deleted_at');
     }
     
     public function getFillable() {

@@ -217,11 +217,11 @@ class SupplierController extends Controller
 
     public function getListMySuppliers(Request $request)
     {
-        $partner = Auth::user();
-        if (!is_null($partner)) {
+        $user = Auth::user();
+        if (!is_null($user)) {
             $params = $request->all();
             $suppliers = Supplier::whereNull(Supplier::TABLE_NAME . '.deleted_at')
-                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $partner->id);
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $user->id);
 
             if (isset($params['category_id']) && (int)$params['category_id'] !== 0) {
                 $suppliers = $suppliers->where('bs_categories_id', (int)$params['category_id']);

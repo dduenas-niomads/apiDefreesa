@@ -56,6 +56,12 @@ Route::prefix('/products')->group(function() {
     Route::middleware('auth:api')->get('/my-products', 'Api\v1\ProductController@getListMyProducts');
 });
 
+// MsProductsCategory
+Route::prefix('/products-category')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\MsProductCategoryController@index');
+    Route::middleware('auth:api')->get('/simple', 'Api\v1\MsProductCategoryController@indexSimple');
+});
+
 // Orders
 Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');
