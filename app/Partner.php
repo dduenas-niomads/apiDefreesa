@@ -16,7 +16,7 @@ class Partner extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'name', 'users_id','password','active',
+        'name', 'users_id','password','active','email',
         'activation_token', 'forgot_password_token',
         'phone', 'ruc', 'address_info'
     ];
