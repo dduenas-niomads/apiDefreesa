@@ -54,6 +54,9 @@ Route::prefix('/suppliers')->group(function() {
 Route::prefix('/products')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\ProductController@index');
     Route::middleware('auth:api')->get('/my-products', 'Api\v1\ProductController@getListMyProducts');
+    Route::middleware('auth:api')->post('/', 'Api\v1\ProductController@store');
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\ProductController@update');
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\ProductController@destroy');
 });
 
 // MsProductsCategory
