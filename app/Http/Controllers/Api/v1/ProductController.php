@@ -78,7 +78,25 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $products = new Product();
+            $products = $products->create($params);
+            return response([
+                "status" => !empty($products) ? true : false,
+                "message" => !empty($products) ? "Producto creado" : "No se pudo crear el Producto",
+                "body" => $products,
+                "redirect" => false
+            ], 201);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -110,9 +128,37 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $products = Product::find($id);
+            if (!is_null($products)) {
+                $params = $request->all();
+                $products->fill($params);
+                $products->save();
+                return response([
+                    "status" => !empty($products) ? true : false,
+                    "message" => !empty($products) ? "Producto actualizado correctamente" : "Product not found",
+                    "body" => $products,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($products) ? true : false,
+                    "message" => !empty($products) ? "Producto actualizado correctamente" : "Product not found",
+                    "body" => $products,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -121,9 +167,38 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        return null;
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $products = Product::find($id);
+            if (!is_null($products)) {
+                $params = $request->all();
+                $products->flag_active = Product::STATE_INACTIVE;
+                $products->deleted_at = date("Y-m-d H:i:s");
+                $products->save();
+                return response([
+                    "status" => !empty($products) ? true : false,
+                    "message" => !empty($products) ? "Local afiliado eliminado correctamente" : "Product not found",
+                    "body" => $products,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($products) ? true : false,
+                    "message" => !empty($products) ? "Local afiliado eliminado correctamente" : "Product not found",
+                    "body" => $products,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     public function getListMyProducts(Request $request)
