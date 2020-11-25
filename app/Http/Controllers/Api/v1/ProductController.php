@@ -179,14 +179,14 @@ class ProductController extends Controller
                 $products->save();
                 return response([
                     "status" => !empty($products) ? true : false,
-                    "message" => !empty($products) ? "Local afiliado eliminado correctamente" : "Product not found",
+                    "message" => !empty($products) ? "Producto eliminado correctamente" : "Product not found",
                     "body" => $products,
                     "redirect" => false
                 ], 200);
             } else {
                 return response([
                     "status" => !empty($products) ? true : false,
-                    "message" => !empty($products) ? "Local afiliado eliminado correctamente" : "Product not found",
+                    "message" => !empty($products) ? "Producto eliminado correctamente" : "Product not found",
                     "body" => $products,
                     "redirect" => false
                 ], 404);
