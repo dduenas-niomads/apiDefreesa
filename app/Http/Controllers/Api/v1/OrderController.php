@@ -329,7 +329,8 @@ class OrderController extends Controller
                 "status" => true,
                 "message" => "Ok",
                 "body" => [
-                    "cost" => 10.00
+                    "cost" => 10.00,
+                    "distance" => "... km"
                 ],
                 "redirect" => false
             ], 200);
