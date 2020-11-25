@@ -314,28 +314,27 @@ class OrderController extends Controller
 
     public function calculateDistance(Request $request)
     {
-        dd(true);
-        $distance = $request->validate([
-            "point_a" => "required",
-            "point_b" => "required"
-        ]);
+        $response = response([
+            "status"  => false,
+            "message" => "Bad request",
+            "body"    => null,
+            "redirect" => false
+        ], 400);
 
-        dd($distance);
+        $params = $request->all();
 
-        if (!$distance) {
-            return response([
-                "status"  => false,
-                "message" => "NOT VALIDATED",
-                "body"    => null,
+        if (isset($params['point_a'])
+            && isset($params['point_b'])) {
+            $response = response([
+                "status" => true,
+                "message" => "Ok",
+                "body" => [
+                    "cost" => 10.00
+                ],
                 "redirect" => false
-            ], 400);
+            ], 200);
         }
 
-        return response([
-            "status" => true,
-            "message" => "Successfully",
-            "body" => $responseJson,
-            "redirect" => false
-        ]);
+        return $response;
     }
 }
