@@ -312,15 +312,14 @@ class OrderController extends Controller
         }
     }
 
-    public function distance(Request $request)
+    public function calculateDistance(Request $request)
     {
         $distance = $request->validate([
             "point_a" => "required|string",
             "point_b" => "required|string"
         ]);
-        $responseJson = [
-            'distance' => 10
-        ];        
+
+        dd($distance);
 
         if (!$distance) {
             return response([
