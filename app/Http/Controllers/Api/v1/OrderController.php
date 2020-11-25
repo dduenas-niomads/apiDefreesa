@@ -315,8 +315,8 @@ class OrderController extends Controller
     public function calculateDistance(Request $request)
     {
         $distance = $request->validate([
-            "point_a" => "required|string",
-            "point_b" => "required|string"
+            "point_a" => "required",
+            "point_b" => "required"
         ]);
 
         dd($distance);
