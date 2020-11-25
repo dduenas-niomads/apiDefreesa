@@ -311,4 +311,30 @@ class OrderController extends Controller
             ], 403);
         }
     }
+
+    public function calculateDistance(Request $request)
+    {
+        $distance = $request->validate([
+            "point_a" => "required|string",
+            "point_b" => "required|string"
+        ]);
+
+        dd($distance);
+
+        if (!$distance) {
+            return response([
+                "status"  => false,
+                "message" => "NOT VALIDATED",
+                "body"    => null,
+                "redirect" => false
+            ], 400);
+        }
+
+        return response([
+            "status" => true,
+            "message" => "Successfully",
+            "body" => $responseJson,
+            "redirect" => false
+        ]);
+    }
 }
