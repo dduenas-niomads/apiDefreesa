@@ -312,7 +312,7 @@ class OrderController extends Controller
         }
     }
 
-    public function calculateDistance(Request $request)
+    public function calculateDistanceCost(Request $request)
     {
         $response = response([
             "status"  => false,
