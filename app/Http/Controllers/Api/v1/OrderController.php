@@ -21,6 +21,8 @@ class OrderController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('orderStatus')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->paginate(env('ITEMS_PAGINATOR'));

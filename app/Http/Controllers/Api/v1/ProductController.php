@@ -207,14 +207,11 @@ class ProductController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $params = $request->all();
-            $products = Product::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
-                Product::TABLE_NAME . '.bs_suppliers_id')            
+            $products = Product::join(Supplier::TABLE_NAME, Product::TABLE_NAME . '.bs_suppliers_id', '=',
+                Supplier::TABLE_NAME . '.id')            
                 ->whereNull(Product::TABLE_NAME . '.deleted_at');
-            if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
-                $products = $products->where(Supplier::TABLE_NAME . '.id', (int)$params['supplier_id']);
-            }else{
-                $products = $products->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $user->id);
-            }
+            $products = $products->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $user->id);
+            
             $products = $products->with('category','supplier')
                                 ->paginate(env('ITEMS_PAGINATOR'));
             return response([
