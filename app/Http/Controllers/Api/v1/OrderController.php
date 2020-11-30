@@ -41,7 +41,7 @@ class OrderController extends Controller
             ], 403);
         }
     }
-
+    
     public function getListForPartners(Request $request)
     {
         $user = Auth::user();
