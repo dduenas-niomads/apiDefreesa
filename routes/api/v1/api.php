@@ -65,6 +65,11 @@ Route::prefix('/products-category')->group(function() {
     Route::middleware('auth:api')->get('/simple', 'Api\v1\MsProductCategoryController@indexSimple');
 });
 
+// MsRegion
+Route::prefix('/regions')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\MsRegionController@index');
+});
+
 // Orders
 Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');

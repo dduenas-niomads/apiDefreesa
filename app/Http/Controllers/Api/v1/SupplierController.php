@@ -95,6 +95,7 @@ class SupplierController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $params = $request->all();
+            $params['acl_partner_users_id'] = $user->id;
             $supplier = new Supplier();
             $supplier = $supplier->create($params);
             return response([

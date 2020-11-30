@@ -17,8 +17,8 @@ class Supplier extends Model
      */
     protected $fillable = [
         //Table Rows
-        'id','bs_categories_id','name','description','url_image','acl_partner_users_id',
-        'image_carrousel','phone',
+        'id','bs_categories_id','name','description','url_image','acl_partner_users_id', 'bs_ms_region_id',
+        'image_carrousel','phone','ruc','business_name','address',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -38,6 +38,12 @@ class Supplier extends Model
     {
         return $this->belongsTo('App\Models\Category', 'bs_categories_id')
             ->select('id', 'name')
+            ->whereNull('deleted_at');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo('App\Models\Region', 'bs_ms_region_id')
             ->whereNull('deleted_at');
     }
     /**

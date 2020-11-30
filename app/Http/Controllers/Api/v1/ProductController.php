@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\MsProductCategory;
 
 class ProductController extends Controller
@@ -206,31 +207,13 @@ class ProductController extends Controller
         $user = Auth::user();
         if (!is_null($user)) {
             $params = $request->all();
-            $products = Product::whereNull('deleted_at');
-            if (isset($params['supplier_id']) && (int)$params['supplier_id'] !== 0) {
-                $products = $products->where('bs_suppliers_id', (int)$params['supplier_id']);
-            }
-            $products = $products->with('category','supplier');
-            if (isset($params['allItems']) && $params['allItems']) {
-                $products = $products->orderBy('bs_ms_products_categories_id')->get();
-                $category = null;
-                $products_ = [ "data" => [] ];
-                foreach ($products as $key => $value) {
-                    if (!is_null($category)) {
-                        if ($category->id != $value->category->id) {
-                            $category = $value->category;
-                            array_push($products_["data"], $category);
-                        }
-                    } else {
-                        $category = $value->category;
-                        array_push($products_["data"], $category);
-                    }
-                    array_push($products_["data"], $value);
-                }
-                $products = $products_;
-            } else {
-                $products = $products->paginate(env('ITEMS_PAGINATOR'));
-            }
+            $products = Product::join(Supplier::TABLE_NAME, Product::TABLE_NAME . '.bs_suppliers_id', '=',
+                Supplier::TABLE_NAME . '.id')            
+                ->whereNull(Product::TABLE_NAME . '.deleted_at');
+            $products = $products->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $user->id);
+            
+            $products = $products->with('category','supplier')
+                                ->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($products) ? true : false,
                 "message" => !empty($products) ? "list of products" : "products not found",
