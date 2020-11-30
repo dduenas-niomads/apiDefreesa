@@ -208,7 +208,8 @@ class ProductController extends Controller
         if (!is_null($user)) {
             $params = $request->all();
             $products = Product::join(Supplier::TABLE_NAME, Product::TABLE_NAME . '.bs_suppliers_id', '=',
-                Supplier::TABLE_NAME . '.id')            
+                Supplier::TABLE_NAME . '.id')
+                ->select(Product::TABLE_NAME . '.*')
                 ->whereNull(Product::TABLE_NAME . '.deleted_at');
             $products = $products->where(Supplier::TABLE_NAME . '.acl_partner_users_id', $user->id);
             
