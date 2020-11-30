@@ -58,7 +58,8 @@ class OrderController extends Controller
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
             }
-            $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')->get();
+            $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->paginate(env('ITEMS_PAGINATOR'));;
             return response([
                 "status" => !empty($orders) ? true : false,
                 "message" => !empty($orders) ? "list of orders" : "orders not found",
