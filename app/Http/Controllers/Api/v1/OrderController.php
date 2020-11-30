@@ -50,6 +50,7 @@ class OrderController extends Controller
             $params = $request->all();
             $orders = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
                    Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
                 ->whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('customer')
@@ -59,7 +60,7 @@ class OrderController extends Controller
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
             }
             $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
-                ->paginate(env('ITEMS_PAGINATOR'));;
+                ->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($orders) ? true : false,
                 "message" => !empty($orders) ? "list of orders" : "orders not found",
