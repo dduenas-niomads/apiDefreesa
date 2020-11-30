@@ -64,6 +64,15 @@ class OrderController extends Controller
             } else {
                 $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC');
             }
+            if (isset($params['search']) && !is_null($params['search'])) {
+                $key = $params['search'];
+                // $orders = $orders->where(function($query) use ($key){
+                //     $query->where(Order::TABLE_NAME . '.correlative', 'LIKE', '%' . $key . '%');
+                //     $query->orWhere(Order::TABLE_NAME . '.reference', 'LIKE', '%' . $key . '%');
+                //     $query->orWhere(MsOrderStatus::TABLE_NAME . '.status_code', 'LIKE', '%' . $key . '%');
+                //     $query->orWhere(MsOrderStatus::TABLE_NAME . '.status_name', 'LIKE', '%' . $key . '%');
+                // });
+            }
             $orders = $orders->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($orders) ? true : false,
