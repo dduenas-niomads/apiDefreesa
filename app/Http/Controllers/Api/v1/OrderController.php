@@ -50,6 +50,7 @@ class OrderController extends Controller
             $params = $request->all();
             $orders = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
                    Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
                 ->whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('customer')
