@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 
 class OrderController extends Controller
@@ -41,7 +42,7 @@ class OrderController extends Controller
             ], 403);
         }
     }
-    
+
     public function getListForPartners(Request $request)
     {
         $user = Auth::user();
