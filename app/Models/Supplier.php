@@ -43,7 +43,7 @@ class Supplier extends Model
 
     public function region()
     {
-        return $this->belongsTo('App\Models\Region', 'bs_ms_region_id')
+        return $this->belongsTo('App\Models\MsRegion', 'bs_ms_region_id')
             ->whereNull('deleted_at');
     }
     /**
