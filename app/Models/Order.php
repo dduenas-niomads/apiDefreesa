@@ -62,9 +62,6 @@ class Order extends Model
             ->select('id', 'name', 'description')
             ->whereNull('deleted_at');
     }
-	public function getCreatedAtAttribute($value) {
-        return date('d/m/Y H:i:s', strtotime($value));
-	}
     /**
      * The attributes that should be hidden for arrays.
      *
