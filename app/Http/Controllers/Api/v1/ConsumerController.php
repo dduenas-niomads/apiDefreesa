@@ -90,7 +90,35 @@ class ConsumerController extends Controller
      */
     public function update($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $consumer = Consumer::find($id);
+            if (!is_null($consumer)) {
+                $params = $request->all();
+                $consumer->fill($params);
+                $consumer->save();
+                return response([
+                    "status" => !empty($consumer) ? true : false,
+                    "message" => !empty($consumer) ? "Consumidor actualizado correctamente" : "consumer not found",
+                    "body" => $consumer,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($consumer) ? true : false,
+                    "message" => !empty($consumer) ? "Consumidor actualizado correctamente" : "consumer not found",
+                    "body" => $consumer,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -99,9 +127,38 @@ class ConsumerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $consumers = Consumer::find($id);
+            if (!is_null($consumers)) {
+                $params = $request->all();
+                $consumers->active = Consumer::STATE_INACTIVE;
+                $consumers->deleted_at = date("Y-m-d H:i:s");
+                $consumers->save();
+                return response([
+                    "status" => !empty($consumers) ? true : false,
+                    "message" => !empty($consumers) ? "Consumidor eliminado correctamente" : "consumers not found",
+                    "body" => $consumers,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($consumers) ? true : false,
+                    "message" => !empty($consumers) ? "Consumidor eliminado correctamente" : "consumers not found",
+                    "body" => $consumers,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
     
 }

@@ -158,9 +158,38 @@ class DeliveryUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $deliveryUser = DeliveryUser::find($id);
+            if (!is_null($deliveryUser)) {
+                $params = $request->all();
+                $deliveryUser->active = DeliveryUser::STATE_INACTIVE;
+                $deliveryUser->deleted_at = date("Y-m-d H:i:s");
+                $deliveryUser->save();
+                return response([
+                    "status" => !empty($deliveryUser) ? true : false,
+                    "message" => !empty($deliveryUser) ? "Repartidor eliminado correctamente" : "deliveryUser not found",
+                    "body" => $deliveryUser,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($deliveryUser) ? true : false,
+                    "message" => !empty($deliveryUser) ? "Repartidor eliminado correctamente" : "deliveryUser not found",
+                    "body" => $deliveryUser,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
     
 }

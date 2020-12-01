@@ -90,7 +90,35 @@ class PartnerController extends Controller
      */
     public function update($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $partner = Partner::find($id);
+            if (!is_null($partner)) {
+                $params = $request->all();
+                $partner->fill($params);
+                $partner->save();
+                return response([
+                    "status" => !empty($partner) ? true : false,
+                    "message" => !empty($partner) ? "Partner actualizado correctamente" : "partner not found",
+                    "body" => $partner,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($partner) ? true : false,
+                    "message" => !empty($partner) ? "Partner actualizado correctamente" : "partner not found",
+                    "body" => $partner,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -99,9 +127,37 @@ class PartnerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
-    }
-    
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $partners = Partner::find($id);
+            if (!is_null($partners)) {
+                $params = $request->all();
+                $partners->active = Partner::STATE_INACTIVE;
+                $partners->deleted_at = date("Y-m-d H:i:s");
+                $partners->save();
+                return response([
+                    "status" => !empty($partners) ? true : false,
+                    "message" => !empty($partners) ? "Partner eliminado correctamente" : "partners not found",
+                    "body" => $partners,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($partners) ? true : false,
+                    "message" => !empty($partners) ? "Partner eliminado correctamente" : "partners not found",
+                    "body" => $partners,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }   
 }

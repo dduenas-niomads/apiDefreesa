@@ -8,6 +8,8 @@ class DeliveryUser extends Model
 {
     protected $connection = 'mysql';
     const TABLE_NAME = 'acl_delivery_users';
+    const STATE_ACTIVE = true;
+    const STATE_INACTIVE = false;
     /**
      * The attributes that are mass assignable.
      *
