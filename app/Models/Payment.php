@@ -12,7 +12,7 @@ class Payment extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'id','users_id','total','bs_suppliers_id','delivery_users_id',
+        'id','users_id','total','bs_suppliers_id','acl_delivery_users_id',
         'status','delivery_status',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
@@ -36,7 +36,7 @@ class Payment extends Model
     }
     public function deliveryUser()
     {
-        return $this->belongsTo('App\DeliveryUser', 'delivery_users_id')
+        return $this->belongsTo('App\DeliveryUser', 'acl_delivery_users_id')
             ->select('id', 'name', 'phone', 'email', 'lastname')
             ->whereNull('deleted_at');
     }

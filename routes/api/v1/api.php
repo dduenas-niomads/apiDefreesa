@@ -90,17 +90,22 @@ Route::prefix('/delivery-user')->group(function() {
     Route::middleware('auth:api')->post('/', 'Api\v1\DeliveryUserController@store');
     Route::middleware('auth:api')->get('/my-founds', 'Api\v1\DeliveryUserController@myFounds');
     Route::middleware('auth:api')->get('/{id}', 'Api\v1\DeliveryUserController@show');
-    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\DeliveryUserController@update');    
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\DeliveryUserController@update');  
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\DeliveryUserController@destroy');    
 });
 
 // Consumers
 Route::prefix('/consumers')->group(function() {
-    Route::middleware('auth:api')->get('/', 'Api\v1\ConsumerController@index'); 
+    Route::middleware('auth:api')->get('/', 'Api\v1\ConsumerController@index');
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\ConsumerController@update');  
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\ConsumerController@destroy');  
 });
 
 // Partners
 Route::prefix('/partners')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\PartnerController@index'); 
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\PartnerController@update');  
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\PartnerController@destroy');  
 });
 
 // Payments
