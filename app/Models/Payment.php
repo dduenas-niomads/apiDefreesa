@@ -8,6 +8,8 @@ class Payment extends Model
 {
     protected $connection = 'mysql';
     const TABLE_NAME = 'payments';
+    const STATE_ACTIVE = true;
+    const STATE_INACTIVE = false;
 
     protected $dates = ['deleted_at'];
 
