@@ -21,6 +21,9 @@ class PaymentsController extends Controller
         if (!is_null($user)) {
             $payments = Payment::whereNull(Payment::TABLE_NAME . '.deleted_at')
                 ->where(Payment::TABLE_NAME . '.users_id', $user->id)
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
                 ->OrderBy(Payment::TABLE_NAME . '.created_at', 'DESC')
                 ->paginate(env('ITEMS_PAGINATOR'));
             return response([
@@ -57,7 +60,27 @@ class PaymentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $params['users_id'] = $user->id;
+            $params['acl_delivery_users_id'] = $user->id;
+            $payments = new Payment();
+            $payments = $payments->create($params);
+            return response([
+                "status" => !empty($payments) ? true : false,
+                "message" => !empty($payments) ? "Pago creado" : "No se pudo crear el Pago",
+                "body" => $payments,
+                "redirect" => false
+            ], 201);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -109,9 +132,37 @@ class PaymentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $payments = Payment::find($id);
+            if (!is_null($payments)) {
+                $params = $request->all();
+                $payments->fill($params);
+                $payments->save();
+                return response([
+                    "status" => !empty($payments) ? true : false,
+                    "message" => !empty($payments) ? "Pago actualizado correctamente" : "payments not found",
+                    "body" => $payments,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($payments) ? true : false,
+                    "message" => !empty($payments) ? "Pago actualizado correctamente" : "payments not found",
+                    "body" => $payments,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     /**
@@ -120,9 +171,38 @@ class PaymentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $payments = Payment::find($id);
+            if (!is_null($payments)) {
+                $params = $request->all();
+                $payments->flag_active = Payment::STATE_INACTIVE;
+                $payments->deleted_at = date("Y-m-d H:i:s");
+                $payments->save();
+                return response([
+                    "status" => !empty($payments) ? true : false,
+                    "message" => !empty($payments) ? "Pago eliminado correctamente" : "payment not found",
+                    "body" => $payments,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($payments) ? true : false,
+                    "message" => !empty($payments) ? "Pago eliminado correctamente" : "payment not found",
+                    "body" => $payments,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 
     public function myFounds()

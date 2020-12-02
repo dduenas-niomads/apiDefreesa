@@ -112,7 +112,8 @@ Route::prefix('/partners')->group(function() {
 Route::prefix('/payments')->group(function() {
     Route::middleware('auth:api')->get('/my-founds', 'Api\v1\PaymentsController@myFounds');
     Route::middleware('auth:api')->get('/', 'Api\v1\PaymentsController@index');
-    // Route::middleware('auth:api')->post('/', 'Api\v1\PaymentsController@store');
+    Route::middleware('auth:api')->post('/', 'Api\v1\PaymentsController@store');
     Route::middleware('auth:api')->get('/{id}', 'Api\v1\PaymentsController@show');
-    // Route::middleware('auth:api')->patch('/{id}', 'Api\v1\PaymentsController@update'); 
+    Route::middleware('auth:api')->patch('/{id}', 'Api\v1\PaymentsController@update'); 
+    Route::middleware('auth:api')->delete('/{id}', 'Api\v1\PaymentsController@destroy');  
 });
