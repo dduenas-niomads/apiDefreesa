@@ -166,7 +166,7 @@ class RegisterController extends Controller
                 'status'  => true,
                 'message' => 'Se envió un código en un SMS al número ' . $params['phone'],
                 'body'    => [
-                    "code" => 001122,
+                    "code" => 102030,
                     "size" => 6
                 ],
                 'redirect' => false
