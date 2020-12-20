@@ -157,6 +157,30 @@ class RegisterController extends Controller
         }
     }
 
+    public function getSms(Request $request)
+    {
+        $params = $request->all();
+        // USER
+        if (isset($params['phone'])) {
+            return response()->json([
+                'status'  => true,
+                'message' => 'Se envió un código en un SMS al número ' . $params['phone'],
+                'body'    => [
+                    "code" => 001122,
+                    "size" => 6
+                ],
+                'redirect' => false
+            ], 200);            
+        } else {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No se pudo enviar el código SMS. No ingresaste número de teléfono',
+                'body'    => null,
+                'redirect' => false
+            ], 400);
+        }
+    }
+
     public function signupActivate($token)
     {
         $user = User::where('activation_token', $token)->first();
