@@ -28,6 +28,8 @@ Route::get('/login', function () {
 
 Route::post('/auth/register', 'Auth\RegisterController@create');
 
+Route::post('/auth/register-sms', 'Auth\RegisterController@getSms');
+
 Route::post('/user/forgot-password', 'Auth\RegisterController@forgotPassword');
 
 Route::get('/api/auth/signup/activate/{token}', 'Auth\RegisterController@signupActivate');
