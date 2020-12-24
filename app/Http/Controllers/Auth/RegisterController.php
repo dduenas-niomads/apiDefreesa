@@ -17,6 +17,7 @@ use App\Notifications\SignupActivate;
 use App\Notifications\ForgotPassword;
 use App\Notifications\DefaultPasswordChanged;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
@@ -161,13 +162,24 @@ class RegisterController extends Controller
     {
         $params = $request->all();
         // USER
-        if (isset($params['phone'])) {
+        if (isset($params['phone']) && strlen($params['phone']) === 9 ) {
+
+            $code =  strval(mt_rand(100000, 999999));
+
+            $response = Http::asForm()->post('http://example.com/users', [
+                'cmd' => 'sendsms',
+                'login' => 'danielgrillz@gmail.com',
+                'passwd' => 'pbda7d7b',
+                'dest' => '51' . $params['phone'],
+                'msg' => 'Bienvenido a Defreesa!, tu código de activación es ' . $code,
+            ]);
+
             return response()->json([
                 'status'  => true,
                 'message' => 'Se envió un código en un SMS al número ' . $params['phone'],
                 'body'    => [
-                    "code" => 102030,
-                    "size" => 6
+                    "code" => $code,
+                    "size" => strlen($code)
                 ],
                 'redirect' => false
             ], 200);            
