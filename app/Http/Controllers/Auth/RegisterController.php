@@ -166,7 +166,7 @@ class RegisterController extends Controller
 
             $code =  strval(mt_rand(100000, 999999));
 
-            $response = Http::asForm()->post('http://example.com/users', [
+            $response = Http::asForm()->post('http://www.altiria.net/api/http', [
                 'cmd' => 'sendsms',
                 'login' => 'danielgrillz@gmail.com',
                 'passwd' => 'pbda7d7b',
