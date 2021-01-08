@@ -186,7 +186,7 @@ class OrderController extends Controller
                 ->find($id);
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "find order" : "order not found",
+                "message" => !empty($order) ? "find order" : "Usted no cuenta con órdenes",
                 "body" => $order,
                 "redirect" => false
             ], 200);
