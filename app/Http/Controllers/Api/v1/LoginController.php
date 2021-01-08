@@ -21,6 +21,7 @@ class LoginController extends Controller
 
         $loginCredentials['active'] = true;
         $loginCredentials['deleted_at'] = null;
+        $loginCredentials['type'] = env('USERS_TYPE');
 
         if (!Auth::attempt($loginCredentials)) {
             return response([
