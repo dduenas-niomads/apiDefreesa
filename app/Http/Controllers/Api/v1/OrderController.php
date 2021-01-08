@@ -216,7 +216,7 @@ class OrderController extends Controller
             }
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "find order" : "order not found",
+                "message" => !empty($order) ? "find order" : "No tienes órdenes pendientes",
                 "body" => $order,
                 "redirect" => false
             ], 200);
