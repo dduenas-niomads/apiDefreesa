@@ -42,10 +42,10 @@ class ForgotPassword extends Notification
     {
         $url = url('/api/user/forgot-password/'.$notifiable->forgot_password_token);
         return (new MailMessage)
-            ->subject('Did you forget your password?')
-            ->line('Dont worry about it, we can solve it. Please, click on the next button to change your password ;)')
-            ->action('Change my password', url($url))
-            ->line('Thank you for using our application!');
+            ->subject('¿Olvidaste tu contraseña?')
+            ->line('No te preocupes, podemos solucionarlo. Por favor, haga clic en el botón siguiente para cambiar su contraseña ;)')
+            ->action('Cambiar mi contraseña', url($url))
+            ->line('¡Gracias por usar Defreesa!');
     }
 
     /**
