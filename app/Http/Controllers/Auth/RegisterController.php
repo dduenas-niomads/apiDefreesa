@@ -245,7 +245,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => 'Mail sended to ' . $params['email'] . '. Check your inbox to change your password.',
+            'message' => 'Mensaje enviado a ' . $params['email'] . '. Por favor, revisa tu correo para cambiar tu contraseña.',
             'body'    => null,
             'redirect' => false
         ], 200);
