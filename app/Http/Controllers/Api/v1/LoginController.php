@@ -26,7 +26,7 @@ class LoginController extends Controller
         if (!Auth::attempt($loginCredentials)) {
             return response([
                 "status"  => false,
-                "message" => "Invalid login credentials",
+                "message" => "Credenciales incorrectas. Intenta nuevamente. Verifica tu usuario y contraseña.",
                 "body"    => null,
                 "redirect" => false
             ], 400);
