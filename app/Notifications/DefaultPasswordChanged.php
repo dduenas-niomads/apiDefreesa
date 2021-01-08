@@ -42,10 +42,10 @@ class DefaultPasswordChanged extends Notification
     {
         $url = url(env('CLIENT_APP_URL'));
         return (new MailMessage)
-            ->subject('Password successfully changed')
-            ->line('We just change your password to "' . env('DEFAULT_PASSWORD') . '". Please, log in and change your password. This is the most secure way ;)')
+            ->subject('Cambio de contraseña correcto')
+            ->line('Acabamos de cambiar tu contraseña por "' . env('DEFAULT_PASSWORD') . '". Por favor, ingresa y cambia tu contraseña manualmente. Este es el método más seguro ;)')
             ->action('Ok!', url($url))
-            ->line('Thank you for using our application!');
+            ->line('Gracias por usar Defreesa!');
     }
 
     /**
