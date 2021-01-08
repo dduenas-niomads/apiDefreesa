@@ -21,11 +21,12 @@ class LoginController extends Controller
 
         $loginCredentials['active'] = true;
         $loginCredentials['deleted_at'] = null;
+        $loginCredentials['type'] = env('USERS_TYPE');
 
         if (!Auth::attempt($loginCredentials)) {
             return response([
                 "status"  => false,
-                "message" => "Invalid login credentials",
+                "message" => "Credenciales incorrectas. Intenta nuevamente. Verifica tu usuario y contraseña.",
                 "body"    => null,
                 "redirect" => false
             ], 400);
