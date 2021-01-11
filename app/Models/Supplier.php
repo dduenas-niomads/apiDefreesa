@@ -18,7 +18,7 @@ class Supplier extends Model
     protected $fillable = [
         //Table Rows
         'id','bs_categories_id','name','description','url_image','acl_partner_users_id', 'bs_ms_region_id',
-        'image_carrousel','phone','ruc','business_name','address',
+        'image_carrousel','phone','ruc','business_name','address','address_info',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
@@ -28,7 +28,8 @@ class Supplier extends Model
      * @var array
      */
     protected $casts = [
-        'image_carrousel' => 'array'
+        'image_carrousel' => 'array',
+        'address_info' => 'array',
     ];    
     public function getFillable() {
         # code...
