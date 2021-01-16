@@ -388,4 +388,46 @@ class OrderController extends Controller
 
         return $response;
     }
+
+    public function dashboardInfo(Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $orders = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id);
+            if (isset($params['date']) && $params['date'] !== "") {
+                $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            }
+            if (isset($params['orderBy']) && !is_null($params['orderBy'])) {
+                $orders = $orders->orderBy($params['orderBy'], $params['orderDir']);
+            } else {
+                $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC');
+            }
+            $incomes = $orders->sum('bs_orders.total');
+            $customers = $orders->distinct('users_id')->count('users_id');
+            $orders = $orders->get()->take(5);
+            return response([
+                "status" => !empty($orders) ? true : false,
+                "clientes" => $customers,
+                "total" => $incomes,
+                "message" => !empty($orders) ? "list of orders" : "orders not found",
+                "body" => $orders,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
 }
