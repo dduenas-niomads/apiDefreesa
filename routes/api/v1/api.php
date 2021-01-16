@@ -75,6 +75,7 @@ Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');
     Route::middleware('auth:api')->get('/my-orders', 'Api\v1\OrderController@getListMyOrders');
     Route::middleware('auth:api')->get('/for-partners', 'Api\v1\OrderController@getListForPartners');
+    Route::middleware('auth:api')->get('/dashboard-info', 'Api\v1\OrderController@dashboardInfo');
     Route::middleware('auth:api')->post('/', 'Api\v1\OrderController@store');
     Route::middleware('auth:api')->post('/calculate-distance-cost', 'Api\v1\OrderController@calculateDistanceCost');
     Route::middleware('auth:api')->get('/delivery-main-order', 'Api\v1\OrderController@showMainOrder');
