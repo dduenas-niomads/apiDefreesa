@@ -222,7 +222,7 @@ class PaymentsController extends Controller
                 ->get();
 
             foreach ($orders as $key => $value) {
-                $total = $total + $value->delivery_amount;
+                $total = $total + $value->delivery_amount + $value->tips;
                 array_push($list, [
                     "id" => $value->id,
                     "created_at" => $value->created_at,
@@ -230,7 +230,7 @@ class PaymentsController extends Controller
                     "operation_customer" => $value->customer->names,
                     'status_id'=> $value->orderStatus->id, 
                     'status_name'=> $value->orderStatus->name, 
-                    'amount'=> $value->delivery_amount, 
+                    'amount'=> $value->delivery_amount + $value->tips, 
                     'currency'=> 'PEN'
                 ]);
             }
