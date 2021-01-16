@@ -227,7 +227,7 @@ class PaymentsController extends Controller
                     "id" => $value->id,
                     "created_at" => $value->created_at,
                     "operation_supplier" => $value->supplier->name,
-                    "operation_customer" => $value->customer->names,
+                    "operation_customer" => $value->customer->name,
                     'status_id'=> $value->orderStatus->id, 
                     'status_name'=> $value->orderStatus->name, 
                     'amount'=> $value->delivery_amount + $value->tips, 
