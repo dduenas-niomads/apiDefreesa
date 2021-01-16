@@ -204,7 +204,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::where('status', '!=', 5)
+            $order = Order::whereNotIn('status', [5,6])
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
