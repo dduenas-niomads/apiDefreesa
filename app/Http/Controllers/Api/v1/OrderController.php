@@ -362,6 +362,71 @@ class OrderController extends Controller
         }
     }
 
+    public function declineOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Order::TABLE_NAME . '.users_id', $user->id)
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->find($id);
+            $status = 404;
+            if ($order->status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->status = Order::STATUS_NOT_PROCEED;
+                $order->flag_active = Order::STATE_INACTIVE;
+                $order->save();
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "DECLINED order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
+    public function acceptOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Order::TABLE_NAME . '.users_id', $user->id)
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->find($id);
+            $status = 404;
+            if ($order->status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->status = Order::STATUS_PROCEED;
+                $order->save();
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "ACCEPTED order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
     public function calculateDistanceCost(Request $request)
     {
         $response = response([
