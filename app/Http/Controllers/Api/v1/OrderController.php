@@ -148,6 +148,7 @@ class OrderController extends Controller
                     $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
                 }
             }
+            $params['bs_delivery_id'] = 89;
             $order = Order::create($params);
             if (isset($params['address_info'])) {
                 $user->address_info = $params['address_info'];
@@ -204,7 +205,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::where('status', '!=', 5)
+            $order = Order::whereNotIn('status', [5,6])
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
@@ -362,6 +363,71 @@ class OrderController extends Controller
         }
     }
 
+    public function declineOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Order::TABLE_NAME . '.users_id', $user->id)
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->find($id);
+            $status = 404;
+            if ($order->status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->status = Order::STATUS_NOT_PROCEED;
+                $order->flag_active = Order::STATE_INACTIVE;
+                $order->save();
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "DECLINED order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
+    public function acceptOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Order::TABLE_NAME . '.users_id', $user->id)
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                ->find($id);
+            $status = 404;
+            if ($order->status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->status = Order::STATUS_PROCEED;
+                $order->save();
+            }
+            return response([
+                "status" => !empty($order) ? true : false,
+                "message" => !empty($order) ? "ACCEPTED order" : "order not found",
+                "body" => $order,
+                "redirect" => false
+            ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
     public function calculateDistanceCost(Request $request)
     {
         $response = response([
@@ -387,5 +453,47 @@ class OrderController extends Controller
         }
 
         return $response;
+    }
+
+    public function dashboardInfo(Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $orders = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id);
+            if (isset($params['date']) && $params['date'] !== "") {
+                $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            }
+            if (isset($params['orderBy']) && !is_null($params['orderBy'])) {
+                $orders = $orders->orderBy($params['orderBy'], $params['orderDir']);
+            } else {
+                $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC');
+            }
+            $incomes = $orders->sum('bs_orders.total');
+            $customers = $orders->distinct('users_id')->count('users_id');
+            $orders = $orders->get()->take(5);
+            return response([
+                "status" => !empty($orders) ? true : false,
+                "clientes" => $customers,
+                "total" => $incomes,
+                "message" => !empty($orders) ? "list of orders" : "orders not found",
+                "body" => $orders,
+                "redirect" => false
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
     }
 }
