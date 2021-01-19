@@ -389,7 +389,7 @@ class OrderController extends Controller
             }
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "DECLINED order" : "order not found",
+                "message" => !empty($order) ? "Órden Rechazada Correctamente" : "order not found",
                 "body" => $order,
                 "redirect" => false
             ], $status);
