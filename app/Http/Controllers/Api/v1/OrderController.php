@@ -372,7 +372,6 @@ class OrderController extends Controller
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
-            dd($order);
             if ($order->status == 1) {
                 $status = 200;
                 $params = $request->all();
