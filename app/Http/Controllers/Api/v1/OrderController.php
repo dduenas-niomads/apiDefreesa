@@ -407,9 +407,15 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+            $params = $request->all();
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
                 ->find($id);
             $status = 404;
             if ($order->status == Order::STATUS_STARTED) {
@@ -421,7 +427,7 @@ class OrderController extends Controller
             }
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "ACCEPTED order" : "order not found",
+                "message" => !empty($order) ? "Órden Aceptada Correctamente" : "order not found",
                 "body" => $order,
                 "redirect" => false
             ], $status);
