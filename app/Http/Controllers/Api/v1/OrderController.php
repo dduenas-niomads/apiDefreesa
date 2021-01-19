@@ -366,9 +366,11 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->find($id);
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id);
             $status = 404;
             if ($order->status == 1) {
                 $status = 200;
