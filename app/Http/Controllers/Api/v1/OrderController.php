@@ -380,7 +380,7 @@ class OrderController extends Controller
                 $order = $order->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
             }
             $status = 404;
-            if ($order->delivery_status == STATUS_STARTED) {
+            if ($order->delivery_status == Order::STATUS_STARTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
