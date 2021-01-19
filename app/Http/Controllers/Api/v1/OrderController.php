@@ -386,13 +386,20 @@ class OrderController extends Controller
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
                 $order->status = Order::STATUS_NOT_PROCEED;
                 $order->save();
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Órden Rechazada Correctamente" : "order not found",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Categoría eliminada correctamente" : "order not found",
+                    "body" => $order,
+                    "redirect" => false
+                ], 404);
             }
-            return response([
-                "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "Órden Rechazada Correctamente" : "order not found",
-                "body" => $order,
-                "redirect" => false
-            ], $status);
         } else {
             return response([
                 "status" => false,
