@@ -366,6 +366,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
+            $params = $request->all();
             $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
                    Order::TABLE_NAME . '.bs_suppliers_id')
                 ->select(Order::TABLE_NAME . '.*')
