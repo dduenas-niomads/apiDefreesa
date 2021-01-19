@@ -395,7 +395,7 @@ class OrderController extends Controller
             } else {
                 return response([
                     "status" => !empty($order) ? true : false,
-                    "message" => !empty($order) ? "La Orden se encuentra en preparación" : "No se encontró la Orden",
+                    "message" => !empty($order) ? "No se puede rechazar la Orden" : "No se encontró la Orden",
                     "body" => $order,
                     "redirect" => false
                 ], 404);
@@ -440,7 +440,7 @@ class OrderController extends Controller
             } else {
                 return response([
                     "status" => !empty($order) ? true : false,
-                    "message" => !empty($order) ? "La Orden se encuentra en preparación" : "No se encontró la Orden",
+                    "message" => !empty($order) ? "La Orden no puede ser aceptada" : "No se encontró la Orden",
                     "body" => $order,
                     "redirect" => false
                 ], 404);
