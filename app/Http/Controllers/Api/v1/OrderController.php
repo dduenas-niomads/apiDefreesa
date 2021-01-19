@@ -372,12 +372,11 @@ class OrderController extends Controller
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
-            if ($order->status == Order::STATUS_STARTED) {
+            if ($order->status == 1) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
                 $order->status = Order::STATUS_NOT_PROCEED;
-                $order->flag_active = Order::STATE_INACTIVE;
                 $order->save();
             }
             return response([
