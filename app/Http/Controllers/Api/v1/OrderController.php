@@ -336,7 +336,6 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
             if (!is_null($order)) {
@@ -369,7 +368,6 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
             if ($order->status == 1) {
