@@ -10,6 +10,9 @@ class Order extends Model
     const TABLE_NAME = 'bs_orders';
     const STATE_ACTIVE = true;
     const STATE_INACTIVE = false;
+    const STATUS_STARTED = 0;
+    const STATUS_ACCEPTED = 1;
+    const STATUS_DECLINED = 2;
     const STATUS_PROCEED = 2;
     const STATUS_NOT_PROCEED = 6;
     const STATUS_FINAL = 5;

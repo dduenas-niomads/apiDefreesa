@@ -83,6 +83,8 @@ Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\OrderController@update');
     Route::middleware('auth:api')->patch('/delivery-next-status/{id}', 'Api\v1\OrderController@deliveryNextStatus');
     Route::middleware('auth:api')->delete('/{id}', 'Api\v1\OrderController@destroy');
+    Route::middleware('auth:api')->delete('/decline-order/{id}', 'Api\v1\OrderController@declineOrder');
+    Route::middleware('auth:api')->patch('/accept-order/{id}', 'Api\v1\OrderController@acceptOrder');
 });
 
 // DeliveryUsers

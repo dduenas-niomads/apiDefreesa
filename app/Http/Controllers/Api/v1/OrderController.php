@@ -344,7 +344,6 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
             if (!is_null($order)) {
@@ -361,6 +360,99 @@ class OrderController extends Controller
                 "body" => $order,
                 "redirect" => false
             ], $status);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
+    public function declineOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
+                ->find($id);
+            if (isset($params['date']) && $params['date'] !== "") {
+                $order = $order->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            }
+            $status = 404;
+            if ($order->delivery_status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->delivery_status = Order::STATUS_DECLINED;
+                $order->save();
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Orden Rechazada Correctamente" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "No se puede rechazar la Orden" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 404);
+            }
+        } else {
+            return response([
+                "status" => false,
+                "message" => "forbidden",
+                "body" => null,
+                "redirect" => true
+            ], 403);
+        }
+    }
+
+    public function acceptOrder($id, Request $request)
+    {
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $params = $request->all();
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
+                ->find($id);
+            $status = 404;
+            if ($order->delivery_status == Order::STATUS_STARTED) {
+                $status = 200;
+                $params = $request->all();
+                $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
+                $order->delivery_status = Order::STATUS_ACCEPTED;
+                $order->save();
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Orden Aceptada Correctamente" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "La Orden no puede ser aceptada" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 404);
+            }
         } else {
             return response([
                 "status" => false,
