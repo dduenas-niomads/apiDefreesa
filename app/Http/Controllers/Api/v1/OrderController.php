@@ -154,6 +154,9 @@ class OrderController extends Controller
                 $user->address_info = $params['address_info'];
                 $user->save();
             }
+            // Create in firebase
+            $this->createOrderInFirebase($order);
+            // Create in firebase
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "created order" : "order cannot be created",
@@ -168,6 +171,11 @@ class OrderController extends Controller
                 "redirect" => true
             ], 403);
         }
+    }
+
+    public function createOrderInFirebase($order)
+    {
+        # code...
     }
 
     /**
