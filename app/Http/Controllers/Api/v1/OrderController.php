@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
+use Kreait\Firebase\Database;
 
 class OrderController extends Controller
 {
@@ -154,6 +155,9 @@ class OrderController extends Controller
                 $user->address_info = $params['address_info'];
                 $user->save();
             }
+            // Create in firebase
+            $this->createOrderInFirebase($order);
+            // Create in firebase
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "created order" : "order cannot be created",
@@ -168,6 +172,36 @@ class OrderController extends Controller
                 "redirect" => true
             ], 403);
         }
+    }
+
+    public function createOrderInFirebase($order)
+    {
+        $database = app('firebase.database');
+        $database->getReference('customers/' . $order->users_id . '/' . $order->id)->set([
+            'orderId' => $order->id,
+            'details_info' => $order->details_info,
+            'status' => $order->status,
+            'date' => $order->created_at,
+            'supplier' => $order->bs_suppliers_id,
+            'total' => $order->total,
+            'bs_delivery_id' => $order->bs_delivery_id,
+            'pickup_address_info' => $order->pickup_address_info,
+            'address_info' => $order->address_info,
+            'type_order' => $order->type_order,
+            'detail_label_order' => $order->detail_label_order,
+            'emisor_name' => $order->emisor_name,
+            'emisor_phone' => $order->emisor_phone,
+            'receptor_phone' => $order->receptor_phone,
+            'commentary' => $order->commentary,
+            'type_document' => $order->type_document,
+            'document_number' => $order->document_number,
+            'tips' => $order->tips,
+            'delivery_amount' => $order->delivery_amount,
+            'commentary_info' => $order->commentary_info,
+            'flag_active' => $order->flag_active,
+            'updated_at' => $order->updated_at,
+            'deleted_at' => $order->deleted_at,
+            ]);
     }
 
     /**
@@ -336,7 +370,6 @@ class OrderController extends Controller
         if (!is_null($user)) {
             $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->find($id);
             $status = 404;
             if (!is_null($order)) {
@@ -367,25 +400,40 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+            $params = $request->all();
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
                 ->find($id);
+            if (isset($params['date']) && $params['date'] !== "") {
+                $order = $order->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            }
             $status = 404;
-            if ($order->status == Order::STATUS_STARTED) {
+            if ($order->delivery_status == Order::STATUS_STARTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->status = Order::STATUS_NOT_PROCEED;
-                $order->flag_active = Order::STATE_INACTIVE;
+                $order->delivery_status = Order::STATUS_DECLINED;
                 $order->save();
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Orden Rechazada Correctamente" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "No se puede rechazar la Orden" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 404);
             }
-            return response([
-                "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "DECLINED order" : "order not found",
-                "body" => $order,
-                "redirect" => false
-            ], $status);
         } else {
             return response([
                 "status" => false,
@@ -400,24 +448,37 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+            $params = $request->all();
+            $order = Order::join(Supplier::TABLE_NAME, Supplier::TABLE_NAME . '.id', '=',
+                   Order::TABLE_NAME . '.bs_suppliers_id')
+                ->select(Order::TABLE_NAME . '.*')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
+                ->with('supplier')
+                ->with('customer')
+                ->with('orderStatus')
+                ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
                 ->find($id);
             $status = 404;
-            if ($order->status == Order::STATUS_STARTED) {
+            if ($order->delivery_status == Order::STATUS_STARTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->status = Order::STATUS_PROCEED;
+                $order->delivery_status = Order::STATUS_ACCEPTED;
                 $order->save();
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "Orden Aceptada Correctamente" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "La Orden no puede ser aceptada" : "No se encontró la Orden",
+                    "body" => $order,
+                    "redirect" => false
+                ], 404);
             }
-            return response([
-                "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "ACCEPTED order" : "order not found",
-                "body" => $order,
-                "redirect" => false
-            ], $status);
         } else {
             return response([
                 "status" => false,
