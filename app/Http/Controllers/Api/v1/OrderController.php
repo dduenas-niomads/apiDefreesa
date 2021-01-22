@@ -177,7 +177,7 @@ class OrderController extends Controller
     public function createOrderInFirebase($order)
     {
         $database = app('firebase.database');
-        $database->getReference('orders/' . $order->users_id . '/' . $order->id)->set([
+        $database->getReference('orders/' . $order->users_id . '/')->push([
             'orderId' => $order->id,
             'users_id' => $order->users_id,
             'details_info' => $order->details_info,
