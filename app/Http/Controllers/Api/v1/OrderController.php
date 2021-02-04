@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
+use App\DeliveryUser;
 use Kreait\Firebase\Database;
 
 class OrderController extends Controller
@@ -149,7 +150,7 @@ class OrderController extends Controller
                     $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
                 }
             }
-            $params['bs_delivery_id'] = 89;
+            $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
             $order = Order::create($params);
             if (isset($params['address_info'])) {
                 $user->address_info = $params['address_info'];
@@ -172,6 +173,19 @@ class OrderController extends Controller
                 "redirect" => true
             ], 403);
         }
+    }
+
+    public function findDeliveryGuy($params = [])
+    {
+        $idDeliveryUser = 0;
+        $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+            ->where(DeliveryUser::TABLE_NAME . '.active', '1')
+            ->first();
+
+        if (!is_null($deliveryUser)) {
+            $idDeliveryUser = $deliveryUser->users_id;
+        }
+        return $idDeliveryUser;
     }
 
     public function createOrderInFirebase($order)
