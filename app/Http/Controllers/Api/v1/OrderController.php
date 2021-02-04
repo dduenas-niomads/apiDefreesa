@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
+use App\DeliveryUser;
+use Kreait\Firebase\Database;
 
 class OrderController extends Controller
 {
@@ -148,12 +150,15 @@ class OrderController extends Controller
                     $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
                 }
             }
-            $params['bs_delivery_id'] = 89;
+            $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
             $order = Order::create($params);
             if (isset($params['address_info'])) {
                 $user->address_info = $params['address_info'];
                 $user->save();
             }
+            // Create in firebase
+            $this->createOrderInFirebase($order);
+            // Create in firebase
             return response([
                 "status" => !empty($order) ? true : false,
                 "message" => !empty($order) ? "created order" : "order cannot be created",
@@ -168,6 +173,50 @@ class OrderController extends Controller
                 "redirect" => true
             ], 403);
         }
+    }
+
+    public function findDeliveryGuy($params = [])
+    {
+        $idDeliveryUser = 0;
+        $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+            ->where(DeliveryUser::TABLE_NAME . '.active', '1')
+            ->first();
+
+        if (!is_null($deliveryUser)) {
+            $idDeliveryUser = $deliveryUser->users_id;
+        }
+        return $idDeliveryUser;
+    }
+
+    public function createOrderInFirebase($order)
+    {
+        $database = app('firebase.database');
+        $database->getReference('orders/' . $order->users_id . '/')->push([
+            'orderId' => $order->id,
+            'users_id' => $order->users_id,
+            'details_info' => $order->details_info,
+            'status' => $order->status,
+            'date' => $order->created_at,
+            'supplier' => $order->bs_suppliers_id,
+            'total' => $order->total,
+            'bs_delivery_id' => $order->bs_delivery_id,
+            'pickup_address_info' => $order->pickup_address_info,
+            'address_info' => $order->address_info,
+            'type_order' => $order->type_order,
+            'detail_label_order' => $order->detail_label_order,
+            'emisor_name' => $order->emisor_name,
+            'emisor_phone' => $order->emisor_phone,
+            'receptor_phone' => $order->receptor_phone,
+            'commentary' => $order->commentary,
+            'type_document' => $order->type_document,
+            'document_number' => $order->document_number,
+            'tips' => $order->tips,
+            'delivery_amount' => $order->delivery_amount,
+            'commentary_info' => $order->commentary_info,
+            'flag_active' => $order->flag_active,
+            'updated_at' => $order->updated_at,
+            'deleted_at' => $order->deleted_at,
+            ]);
     }
 
     /**
