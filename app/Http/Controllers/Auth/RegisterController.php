@@ -91,6 +91,9 @@ class RegisterController extends Controller
                 'password' => Hash::make($params['password']),
                 'activation_token' => Str::random(60)
             ]);
+            if (!isset($params['type'])) {
+                $params['type'] = env('USERS_TYPE');
+            }
             if (isset($params['type']) && (int)$params['type'] === 1) {
                 $consumer = new Consumer();
                 $consumer->users_id = $user->id;
