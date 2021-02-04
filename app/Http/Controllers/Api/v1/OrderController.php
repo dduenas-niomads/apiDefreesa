@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
+use Kreait\Laravel\Firebase\Facades\Firebase;
+use App\DeliveryUser;
 
 class OrderController extends Controller
 {
@@ -148,7 +150,7 @@ class OrderController extends Controller
                     $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
                 }
             }
-            $params['bs_delivery_id'] = 89;
+            $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
             $order = Order::create($params);
             if (isset($params['address_info'])) {
                 $user->address_info = $params['address_info'];
@@ -173,9 +175,30 @@ class OrderController extends Controller
         }
     }
 
+    public function findDeliveryGuy($params = [])
+    {
+        $idDeliveryUser = 0;
+        $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+            ->where(DeliveryUser::TABLE_NAME . '.active', '1')
+            ->first();
+
+        if (!is_null($deliveryUser)) {
+            $idDeliveryUser = $deliveryUser->users_id;
+        }
+        return $idDeliveryUser;
+    }
+
     public function createOrderInFirebase($order)
     {
         # code...
+        firebase.database().ref('customers/' + userID).set({
+            name: name,
+            email: email,
+        });
+
+        $database->getReference('customers/' . $order->users_id)->set([
+            'orderId' => $order->id,
+           ]);
     }
 
     /**
