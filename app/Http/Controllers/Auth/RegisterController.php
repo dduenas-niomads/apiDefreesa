@@ -168,10 +168,10 @@ class RegisterController extends Controller
 
             $response = Http::asForm()->post('http://www.altiria.net/api/http', [
                 'cmd' => 'sendsms',
-                'login' => 'danielgrillz@gmail.com',
-                'passwd' => 'pbda7d7b',
+                'login' => env('SMS_USER'),
+                'passwd' => env('SMS_PWD'),
                 'dest' => '51' . $params['phone'],
-                'msg' => 'Bienvenido a Defreesa!, tu código de activación es ' . $code,
+                'msg' => 'Bienvenido a ' . env('APP_NAME') . '!, tu código de activación es ' . $code,
             ]);
 
             return response()->json([

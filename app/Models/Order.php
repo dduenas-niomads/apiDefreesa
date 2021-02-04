@@ -10,6 +10,9 @@ class Order extends Model
     const TABLE_NAME = 'bs_orders';
     const STATE_ACTIVE = true;
     const STATE_INACTIVE = false;
+    const STATUS_STARTED = 0;
+    const STATUS_ACCEPTED = 1;
+    const STATUS_DECLINED = 2;
     const STATUS_PROCEED = 2;
     const STATUS_NOT_PROCEED = 6;
     const STATUS_FINAL = 5;
@@ -23,7 +26,7 @@ class Order extends Model
         'id','users_id','details_info','total','total_info', 'receptor_phone', 'receptor_name',
         'bs_suppliers_id','status','commentary_info','purchase_info', 'emisor_phone',
         'address_info','commentary','tips','type_document','document_number', 'detail_label_order',
-        'delivery_status','pickup_address_info','type_order', 'emisor_name', 
+        'delivery_status','pickup_address_info','type_order', 'emisor_name', 'bs_delivery_id',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
