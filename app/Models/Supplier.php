@@ -18,7 +18,7 @@ class Supplier extends Model
     protected $fillable = [
         //Table Rows
         'id','bs_categories_id','name','description','url_image','acl_partner_users_id', 'bs_ms_region_id',
-        'image_carrousel','phone','ruc','business_name','address','address_info','on_demand',
+        'image_carrousel','phone','ruc','business_name','address','address_info','on_demand','on_demand_now',
         //Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
