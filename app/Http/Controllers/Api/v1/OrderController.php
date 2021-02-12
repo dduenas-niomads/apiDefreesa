@@ -451,11 +451,11 @@ class OrderController extends Controller
                 $order = $order->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
             }
             $status = 404;
-            if ($order->delivery_status == Order::STATUS_STARTED) {
+            if ($order->status == Order::STATUS_ACCEPTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->delivery_status = Order::STATUS_DECLINED;
+                $order->status = Order::STATUS_NOT_PROCEED;
                 $order->save();
                 return response([
                     "status" => !empty($order) ? true : false,
@@ -496,11 +496,11 @@ class OrderController extends Controller
                 ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
                 ->find($id);
             $status = 404;
-            if ($order->delivery_status == Order::STATUS_STARTED) {
+            if ($order->status == Order::STATUS_ACCEPTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->delivery_status = Order::STATUS_ACCEPTED;
+                $order->status = Order::STATUS_PROCEED;
                 $order->save();
                 return response([
                     "status" => !empty($order) ? true : false,
