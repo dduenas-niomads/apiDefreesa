@@ -11,6 +11,7 @@ use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 use App\DeliveryUser;
 use Kreait\Firebase\Database;
+// use App NotificationController
 
 class OrderController extends Controller
 {
@@ -212,6 +213,7 @@ class OrderController extends Controller
 
     public function createOrderInFirebase($order)
     {
+        // create row in db
         $database = app('firebase.database');
         $database->getReference('orders/' . $order->users_id . '/')->push([
             'orderId' => $order->id,
@@ -238,7 +240,11 @@ class OrderController extends Controller
             'flag_active' => $order->flag_active,
             'updated_at' => $order->updated_at,
             'deleted_at' => $order->deleted_at,
-            ]);
+        ]);
+
+        // send message
+        // data_notification= array
+        // NotificationController::sendFirebaseNotification($data_notification);
     }
 
     /**
@@ -339,6 +345,8 @@ class OrderController extends Controller
                         $order->save();
                     }
                 }
+                // data_notification= array
+                // NotificationController::sendFirebaseNotification($data_notification);
                 return response([
                     "status" => !empty($order) ? true : false,
                     "message" => !empty($order) ? "find order" : "order not found",
