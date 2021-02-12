@@ -11,7 +11,7 @@ use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 use App\DeliveryUser;
 use Kreait\Firebase\Database;
-// use App NotificationController
+use App\Http\Controllers\Api\v1\NotificationController;
 
 class OrderController extends Controller
 {
@@ -243,8 +243,35 @@ class OrderController extends Controller
         ]);
 
         // send message
-        // data_notification= array
-        // NotificationController::sendFirebaseNotification($data_notification);
+        $message = "Gracias por crear tu orden";
+        $data_notification = app('firebase.database');
+        $data_notification->getReference('niomads/')->set([
+            'orderId' => $order->id,
+            'users_id' => $order->users_id,
+            'details_info' => $order->details_info,
+            'status' => $order->status,
+            'date' => $order->created_at,
+            'supplier' => $order->bs_suppliers_id,
+            'total' => $order->total,
+            'bs_delivery_id' => $order->bs_delivery_id,
+            'pickup_address_info' => $order->pickup_address_info,
+            'address_info' => $order->address_info,
+            'type_order' => $order->type_order,
+            'detail_label_order' => $order->detail_label_order,
+            'emisor_name' => $order->emisor_name,
+            'emisor_phone' => $order->emisor_phone,
+            'receptor_phone' => $order->receptor_phone,
+            'commentary' => $order->commentary,
+            'type_document' => $order->type_document,
+            'document_number' => $order->document_number,
+            'tips' => $order->tips,
+            'delivery_amount' => $order->delivery_amount,
+            'commentary_info' => $order->commentary_info,
+            'flag_active' => $order->flag_active,
+            'updated_at' => $order->updated_at,
+            'deleted_at' => $order->deleted_at,
+        ]);
+        NotificationController::sendFirebaseNotification($data_notification);
     }
 
     /**
