@@ -19,6 +19,8 @@ class LoginController extends Controller
             "password" => "required|string"
         ]);
 
+        $params = $request->all();
+
         $loginCredentials['active'] = true;
         $loginCredentials['deleted_at'] = null;
         $loginCredentials['type'] = env('USERS_TYPE');
@@ -34,6 +36,10 @@ class LoginController extends Controller
 
         $accessToken = Auth::user()->createToken('authToken')->accessToken;
         $user = User::with('activeLicense')->find(Auth::user()->id);
+        if (isset($params['firebase_token'])) {
+            $user->firebase_token = $params['firebase_token'];
+            $user->save();
+        }
         $user->access_token = $accessToken;
         return response([
             "status" => true,
