@@ -172,7 +172,7 @@ class OrderController extends Controller
                     $user->save();
                 }
                 // Create in firebase
-                $this->createOrderInFirebase($order);
+                $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
                 // Create in firebase
                 return response([
                     "status" => !empty($order) ? true : false,
@@ -211,7 +211,7 @@ class OrderController extends Controller
         return $idDeliveryUser;
     }
 
-    public function createOrderInFirebase($order)
+    public function createOrderInFirebase($order, $user = null, $message = "")
     {
         // create row in db
         $database = app('firebase.database');
@@ -243,8 +243,7 @@ class OrderController extends Controller
         ]);
 
         // send message
-        $data_notification = [];
-        // NotificationController::sendFirebaseNotification($data_notification);
+        NotificationController::sendFirebaseNotification($order, $user, $message);
     }
 
     /**
