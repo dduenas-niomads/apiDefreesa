@@ -53,7 +53,7 @@ class NotificationController extends Controller
 		$fields = array (
 			'registration_ids' => $device_token,
 			'notification' => $notification,
-			'data' => [ 'fcmapp' => $data ]
+			'data' => [ 'app' => $data ]
 		);
 		$fields = json_encode ( $fields );
 		$headers = array (

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view("welcome");
+});
+
+
+Route::get('/get-my-token', function () {
+    return json_encode(Auth::user());
 });
 
 Route::get('/login', function () {
