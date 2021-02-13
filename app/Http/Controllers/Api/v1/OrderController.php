@@ -243,7 +243,7 @@ class OrderController extends Controller
         ]);
 
         // send message
-        NotificationController::sendFirebaseNotification($order, $user, $message);
+        NotificationController::sendFcmTo($user->firebase_token, '!! ' . env('APP_NAME') . ' !! - Órden nº: ' . $order->id, $message);
     }
 
     /**
