@@ -51,7 +51,7 @@ class NotificationController extends Controller
 		});
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$fields = array (
-			'registration_ids' => $device_token,
+			'registration_ids' => [$device_token],
 			'notification' => $notification,
 			'data' => [ 'app' => $data ]
 		);
