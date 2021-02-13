@@ -39,7 +39,7 @@ class NotificationController extends Controller
 		}
 	}
 
-	public static function sendFcmTo($device_token = null, $title = "APP", $body = "APP BODY", $icon = null, $data) {
+	public static function sendFcmTo($device_token = null, $title = "APP", $body = "APP BODY", $icon = null, $data = []) {
 		# code...
 		$notification = [
 			'title' => $title,
