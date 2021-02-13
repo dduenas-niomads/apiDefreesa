@@ -72,7 +72,7 @@ Route::prefix('/regions')->group(function() {
 
 // Notifications
 Route::prefix('/send-fcm')->group(function() {
-    Route::middleware('auth:api')->get('/', 'Api\v1\NotificationController@sendFcm');
+    Route::middleware('auth:api')->post('/', 'Api\v1\NotificationController@sendFcm');
 });
 
 // Orders
