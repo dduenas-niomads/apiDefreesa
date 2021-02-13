@@ -57,7 +57,7 @@ class NotificationController extends Controller
 		);
 		$fields = json_encode ( $fields );
 		$headers = array (
-			'Authorization: key=AIzaSyBz6WWjiVFu3TeiftLUDvT3hiZyPU8NxG8',
+			'Authorization: key=' . env('FCM_SERVER_KEY'),
 			'Content-Type: application/json'
 		);
 		$ch = curl_init ();
