@@ -344,8 +344,7 @@ class OrderController extends Controller
                         $order->save();
                     }
                 }
-                // data_notification= array
-                // NotificationController::sendFirebaseNotification($data_notification);
+                NotificationController::sendFcmTo($user->firebase_token, "!! " . env('APP_NAME') . " !! - Órden nº: " . $order->id, "Tu orden esta siendo atendida... en breve estaremos en tu puerta.");
                 return response([
                     "status" => !empty($order) ? true : false,
                     "message" => !empty($order) ? "find order" : "order not found",
