@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-	public static function sendFirebaseNotification(array $data) {
+	public static function sendFirebaseNotification($order, $user, $message) {
 		# code...
 		try {
 			$json_object                    = new \stdClass();
-			$json_object->to                = '/orders/' . $data['bs_suppliers_id'] . '-' . $data['customer_id'] . '-' . $data['bs_delivery_id'];
+			$json_object->to                = '/orders/';
 			$json_objectNotification        = new \stdClass();
 			$json_objectNotification->sound = 'default';
-			$json_objectNotification->body  = $data['message'];
-			$json_objectNotification->title = 'Defreesa!!! - Órden nº: ' . $data['order_id'];
+			$json_objectNotification->body  = $message;
+			$json_objectNotification->title = '!! ' . env('APP_NAME') . ' !! - Órden nº: ' . $order->id;
 			$json_object->notification      = $json_objectNotification;
 			$data_send                      = json_encode($json_object);
 
