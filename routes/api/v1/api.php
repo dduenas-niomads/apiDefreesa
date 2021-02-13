@@ -70,6 +70,11 @@ Route::prefix('/regions')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\MsRegionController@index');
 });
 
+// Notifications
+Route::prefix('/send-fcm')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\NotificationController@sendFcm');
+});
+
 // Orders
 Route::prefix('/orders')->group(function() {
     Route::middleware('auth:api')->get('/', 'Api\v1\OrderController@index');
