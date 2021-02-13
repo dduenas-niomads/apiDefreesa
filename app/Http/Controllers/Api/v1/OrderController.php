@@ -243,9 +243,8 @@ class OrderController extends Controller
         ]);
 
         // send message
-        $message = "Gracias por crear tu orden";
         $data_notification = app('firebase.database');
-        $data_notification->getReference('niomads/')->set([
+        $data_notification->getReference('niomads/' . $order->id . '/')->set([
             'orderId' => $order->id,
             'users_id' => $order->users_id,
             'details_info' => $order->details_info,
