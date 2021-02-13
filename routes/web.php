@@ -18,11 +18,6 @@ Route::get('/', function () {
     return view("welcome");
 });
 
-
-Route::get('/get-my-token', function () {
-    return json_encode(Auth::user());
-});
-
 Route::get('/login', function () {
     return response([
         "status" => false,
