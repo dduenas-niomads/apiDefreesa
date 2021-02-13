@@ -85,7 +85,7 @@ class NotificationController extends Controller
 		});
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$fields = array (
-			'registration_ids' => Auth::user()->firebase_token,
+			'registration_ids' => [Auth::user()->firebase_token],
 			'notification' => $notification,
 			'data' => [ 'app' => [] ]
 		);
