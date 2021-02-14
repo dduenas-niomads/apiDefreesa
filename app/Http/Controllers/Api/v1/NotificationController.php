@@ -101,7 +101,7 @@ class NotificationController extends Controller
 
 		$usersToken = User::select('firebase_token')
 			->whereNull('deleted_at')
-			->where('firebase_token')
+			->whereNotNull('firebase_token')
 			->get();
 		$usersToken_ = [];
 		foreach ($usersToken as $key => $value) {
