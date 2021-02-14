@@ -105,7 +105,7 @@ class NotificationController extends Controller
 			->get();
 		$usersToken_ = [];
 		foreach ($usersToken as $key => $value) {
-			array_push($usersToken_, $value->firebase);
+			array_push($usersToken_, $value->firebase_token);
 		}
 		$device_token = $usersToken_;
 		dd($device_token);
