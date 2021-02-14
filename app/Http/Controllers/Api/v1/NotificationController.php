@@ -108,7 +108,6 @@ class NotificationController extends Controller
 			array_push($usersToken_, $value->firebase_token);
 		}
 		$device_token = $usersToken_;
-		dd($device_token);
 
 		$fields = array (
 			'registration_ids' => $device_token,
