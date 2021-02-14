@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class NotificationController extends Controller
 {
@@ -50,8 +51,21 @@ class NotificationController extends Controller
 			return $value !== null;
 		});
 		$url = 'https://fcm.googleapis.com/fcm/send';
+		if (is_null($device_token)) {
+			$usersToken = User::select('firebase_token')
+				->whereNull('deleted_at')
+				->where('firebase_token')
+				->get();
+			$usersToken_ = [];
+			foreach ($usersToken as $key => $value) {
+				array_push($usersToken_, $value->firebase);
+				$device_token = $usersToken_;
+			}
+		} else {
+			$device_token = [$device_token];
+		}
 		$fields = array (
-			'registration_ids' => [$device_token],
+			'registration_ids' => $device_token,
 			'notification' => $notification,
 			'data' => [ 'app' => $data ]
 		);
@@ -84,8 +98,19 @@ class NotificationController extends Controller
 			return $value !== null;
 		});
 		$url = 'https://fcm.googleapis.com/fcm/send';
+
+		$usersToken = User::select('firebase_token')
+			->whereNull('deleted_at')
+			->where('firebase_token')
+			->get();
+		$usersToken_ = [];
+		foreach ($usersToken as $key => $value) {
+			array_push($usersToken_, $value->firebase);
+			$device_token = $usersToken_;
+		}
+
 		$fields = array (
-			'registration_ids' => [Auth::user()->firebase_token],
+			'registration_ids' => $device_token,
 			'notification' => $notification,
 			'data' => [ 'app' => [] ]
 		);
