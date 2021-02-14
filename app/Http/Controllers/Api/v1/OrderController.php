@@ -11,6 +11,7 @@ use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 use App\DeliveryUser;
 use Kreait\Firebase\Database;
+use App\Http\Controllers\Api\v1\NotificationController;
 
 class OrderController extends Controller
 {
@@ -171,7 +172,7 @@ class OrderController extends Controller
                     $user->save();
                 }
                 // Create in firebase
-                $this->createOrderInFirebase($order);
+                $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
                 // Create in firebase
                 return response([
                     "status" => !empty($order) ? true : false,
@@ -210,8 +211,9 @@ class OrderController extends Controller
         return $idDeliveryUser;
     }
 
-    public function createOrderInFirebase($order)
+    public function createOrderInFirebase($order, $user = null, $message = "")
     {
+        // create row in db
         $database = app('firebase.database');
         $database->getReference('orders/' . $order->users_id . '/')->push([
             'orderId' => $order->id,
@@ -238,7 +240,10 @@ class OrderController extends Controller
             'flag_active' => $order->flag_active,
             'updated_at' => $order->updated_at,
             'deleted_at' => $order->deleted_at,
-            ]);
+        ]);
+
+        // send message
+        NotificationController::sendFcmTo($user->firebase_token, "!! " . env('APP_NAME') . " !! - Órden nº: " . $order->id, $message);
     }
 
     /**
@@ -339,6 +344,7 @@ class OrderController extends Controller
                         $order->save();
                     }
                 }
+                NotificationController::sendFcmTo($user->firebase_token, "!! " . env('APP_NAME') . " !! - Órden nº: " . $order->id, "Tu orden esta siendo atendida... en breve estaremos en tu puerta.");
                 return response([
                     "status" => !empty($order) ? true : false,
                     "message" => !empty($order) ? "find order" : "order not found",
@@ -451,11 +457,11 @@ class OrderController extends Controller
                 $order = $order->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
             }
             $status = 404;
-            if ($order->delivery_status == Order::STATUS_STARTED) {
+            if ($order->status == Order::STATUS_ACCEPTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->delivery_status = Order::STATUS_DECLINED;
+                $order->status = Order::STATUS_NOT_PROCEED;
                 $order->save();
                 return response([
                     "status" => !empty($order) ? true : false,
@@ -496,11 +502,11 @@ class OrderController extends Controller
                 ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id)
                 ->find($id);
             $status = 404;
-            if ($order->delivery_status == Order::STATUS_STARTED) {
+            if ($order->status == Order::STATUS_ACCEPTED) {
                 $status = 200;
                 $params = $request->all();
                 $order->commentary = isset($params['commentary']) ? $params['commentary'] : null;
-                $order->delivery_status = Order::STATUS_ACCEPTED;
+                $order->status = Order::STATUS_PROCEED;
                 $order->save();
                 return response([
                     "status" => !empty($order) ? true : false,

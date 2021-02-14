@@ -20,7 +20,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'lastname', 'email', 'password', 'active', 'type', 'radio', 'type_document',
-        'activation_token', 'forgot_password_token',
+        'activation_token', 'forgot_password_token', 'firebase_token',
         'phone', 'document_number', 'address_info'
     ];
 
