@@ -62,7 +62,7 @@ class Order extends Model
     public function orderStatus()
     {
         return $this->belongsTo('App\Models\MsOrderStatus', 'status')
-            ->select('id', 'name', 'description')
+            ->select('id', 'name', 'color' ,'description')
             ->whereNull('deleted_at');
     }
     /**
