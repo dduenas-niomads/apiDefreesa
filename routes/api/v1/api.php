@@ -22,6 +22,7 @@ Route::prefix('/user')->group(function() {
     Route::middleware('auth:api')->delete('/logout-all', 'Api\v1\LoginController@logoutAll');
     Route::middleware('auth:api')->get('/', 'Api\v1\UserController@show');
     Route::middleware('auth:api')->patch('/update', 'Api\v1\UserController@update');
+    Route::middleware('auth:api')->get('/change-status/{status}', 'Api\v1\UserController@changeStatus');
 });
 
 // Licenses/Plans

@@ -140,6 +140,20 @@ class UserController extends Controller
         ]);
     }
 
+    public function changeStatus($status)
+    {
+        $user = Auth::user();
+        $user->status = (int)$status;
+        $user->save();
+
+        return response([
+            "status" => !is_null($user) ? true : false,
+            "message" => int($status) ? "Ahora estás EN SERVICIO" : "Ahora estás EN DESCANSO",
+            "body" => $user,
+            "redirect" => false
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
