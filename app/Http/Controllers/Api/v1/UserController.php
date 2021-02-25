@@ -148,7 +148,7 @@ class UserController extends Controller
 
         return response([
             "status" => !is_null($user) ? true : false,
-            "message" => int($status) ? "Ahora estás EN SERVICIO" : "Ahora estás EN DESCANSO",
+            "message" => (int)$status ? "Ahora estás EN SERVICIO" : "Ahora estás EN DESCANSO",
             "body" => $user,
             "redirect" => false
         ]);
