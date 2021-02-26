@@ -120,10 +120,6 @@
                 "laravel composite keys",
                 "laravel relationships"
             ],
-            "support": {
-                "issues": "https://github.com/topclaudy/compoships/issues",
-                "source": "https://github.com/topclaudy/compoships/tree/2.0.5"
-            },
             "funding": [
                 {
                     "url": "https://paypal.me/awobaz",
