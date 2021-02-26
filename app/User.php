@@ -21,7 +21,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'lastname', 'email', 'password', 'active', 'type', 'radio', 'type_document',
         'activation_token', 'forgot_password_token', 'firebase_token',
-        'phone', 'document_number', 'address_info'
+        'phone', 'document_number', 'address_info', 'url_image', 'status',
+        // bank
+        'bank', 'bank_account', 'bank_account_ci',
     ];
 
     /**
