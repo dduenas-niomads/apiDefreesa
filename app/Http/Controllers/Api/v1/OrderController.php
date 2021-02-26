@@ -144,47 +144,59 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $params = $request->all();
-            $params['users_id'] = $user->id;
-            if (isset($params['details_info']) && is_array($params['details_info'])) {
-                $params['bs_suppliers_id'] = 0;
-                $countDemand = 0;
-                $demandAvailable = true;
-                foreach ($params['details_info'] as $key => $value) {
-                    $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
-                    $countDemand++;
-                }
-                $supplier = Supplier::find($params['bs_suppliers_id']);
-                if (!is_null($supplier)) {
-                    $freeDemand = $supplier->on_demand - $supplier->on_demand_now;
-                    if ($freeDemand < $countDemand) {
-                        $demandAvailable = false;
-                    } else {
-                        $supplier->on_demand_now = $supplier->on_demand_now + $countDemand;
-                        $supplier->save();
+            $deliveryCount = User::where('status', '1')
+                ->where('type', '2')
+                ->count();
+            if ($deliveryCount > 0) {
+                $params = $request->all();
+                $params['users_id'] = $user->id;
+                if (isset($params['details_info']) && is_array($params['details_info'])) {
+                    $params['bs_suppliers_id'] = 0;
+                    $countDemand = 0;
+                    $demandAvailable = true;
+                    foreach ($params['details_info'] as $key => $value) {
+                        $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
+                        $countDemand++;
+                    }
+                    $supplier = Supplier::find($params['bs_suppliers_id']);
+                    if (!is_null($supplier)) {
+                        $freeDemand = $supplier->on_demand - $supplier->on_demand_now;
+                        if ($freeDemand < $countDemand) {
+                            $demandAvailable = false;
+                        } else {
+                            $supplier->on_demand_now = $supplier->on_demand_now + $countDemand;
+                            $supplier->save();
+                        }
                     }
                 }
-            }
-            if ($demandAvailable) {
-                $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
-                $order = Order::create($params);
-                if (isset($params['address_info'])) {
-                    $user->address_info = $params['address_info'];
-                    $user->save();
+                if ($demandAvailable) {
+                    $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
+                    $order = Order::create($params);
+                    if (isset($params['address_info'])) {
+                        $user->address_info = $params['address_info'];
+                        $user->save();
+                    }
+                    // Create in firebase
+                    $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
+                    // Create in firebase
+                    return response([
+                        "status" => !empty($order) ? true : false,
+                        "message" => !empty($order) ? "created order" : "order cannot be created",
+                        "body" => $order,
+                        "redirect" => false
+                    ], 201);
+                } else {
+                    return response([
+                        "status" => false,
+                        "message" => "Nuestro partner no puede atender tu pedido ahora mismo. Intenta nuevamente en unos minutos :)",
+                        "body" => null,
+                        "redirect" => true
+                    ], 400);
                 }
-                // Create in firebase
-                $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
-                // Create in firebase
-                return response([
-                    "status" => !empty($order) ? true : false,
-                    "message" => !empty($order) ? "created order" : "order cannot be created",
-                    "body" => $order,
-                    "redirect" => false
-                ], 201);
             } else {
                 return response([
                     "status" => false,
-                    "message" => "Nuestro partner no puede atender tu pedido ahora mismo. Intenta nuevamente en unos minutos :)",
+                    "message" => "En este momento todos nuestros Defreevers se encuentran ocupados. Por favor, intenta en 5 minutos!",
                     "body" => null,
                     "redirect" => true
                 ], 400);
