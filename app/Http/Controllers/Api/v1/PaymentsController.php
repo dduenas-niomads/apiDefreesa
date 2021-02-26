@@ -217,6 +217,7 @@ class PaymentsController extends Controller
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id)
                 ->whereNotIn(Order::TABLE_NAME . '.status', [5,6]);
             if (isset($params['date'])) {
+                dd($params['date'], urldecode($params['date']));
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . urldecode($params['date']) . '%');
             }
             $orders = $orders->with('supplier')
