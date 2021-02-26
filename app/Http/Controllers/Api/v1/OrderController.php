@@ -283,6 +283,7 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->find($id);
             return response([
                 "status" => !empty($order) ? true : false,
