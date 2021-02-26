@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ranking;
+use App\Models\Order;
 
 class RankingController extends Controller
 {
@@ -61,14 +62,35 @@ class RankingController extends Controller
         if (!is_null($user)) {
             $params = $request->all();
             $params['users_id'] = $user->id;
-            $ranking = new Ranking();
-            $ranking = $ranking->create($params);
-            return response([
-                "status" => !empty($ranking) ? true : false,
-                "message" => !empty($ranking) ? "Gracias por tu puntuación!" : "No se pudo crear la puntuación",
-                "body" => $ranking,
-                "redirect" => false
-            ], 201);
+            if (isset($params['bs_orders_id'])) {
+                $order = Order::find((int)$params['bs_orders_id']);
+                if (!is_null($order)) {
+                    $order->flag_ranking_needed = Order::STATE_INACTIVE;
+                    $order->save();
+                    $ranking = new Ranking();
+                    $ranking = $ranking->create($params);
+                    return response([
+                        "status" => !empty($ranking) ? true : false,
+                        "message" => !empty($ranking) ? "Gracias por tu puntuación!" : "No se pudo crear la puntuación",
+                        "body" => $ranking,
+                        "redirect" => false
+                    ], 201);
+                } else {
+                    return response([
+                        "status" => false,
+                        "message" => "La orden ingresada no es válida",
+                        "body" => null,
+                        "redirect" => true
+                    ], 400);
+                }
+            } else {
+                return response([
+                    "status" => false,
+                    "message" => "Debe ingresar una orden",
+                    "body" => null,
+                    "redirect" => true
+                ], 400);
+            }
         } else {
             return response([
                 "status" => false,
