@@ -28,6 +28,7 @@ class OrderController extends Controller
             $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->paginate(env('ITEMS_PAGINATOR'));
@@ -59,7 +60,6 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
-                ->with('ranking')
                 ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
@@ -104,7 +104,6 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
-                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
