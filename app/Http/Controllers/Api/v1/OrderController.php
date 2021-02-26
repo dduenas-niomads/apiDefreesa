@@ -318,7 +318,9 @@ class OrderController extends Controller
                 if (!is_null($order)) {
                     if ($order->status < 5) {
                         $msOrderStatus = MsOrderStatus::find($order->status + 1);
-                        $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
+                        if (!is_null($msOrderStatus)) {
+                            $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
+                        }
                         $order->order_next_status = $msOrderStatus;
                     }
                 }
@@ -416,24 +418,30 @@ class OrderController extends Controller
             ->find($id);
 
         if (!is_null($order)) {
-            if ($order->status !== Order::STATUS_FINAL) {
+            if ($order->status > Order::STATUS_FINAL) {
                 $order->status = $order->status + 1;
                 $order->save();
                 if (!is_null($order)) {
                     $msOrderStatus = MsOrderStatus::find($order->status + 1);
+                    if (!is_null($msOrderStatus)) {
+                        $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
+                    }
                     $order->order_next_status = $msOrderStatus;
                 }
+            } else {
+                $order->flag_ranking_needed = Order::STATE_ACTIVE;
+                $order->save();
             }
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "order updated" : "order not found",
+                "message" => !empty($order) ? "Órden actualizada" : "Órden sin actualizar",
                 "body" => $order,
                 "redirect" => false
             ], 200);
         } else {
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "order updated" : "order not found",
+                "message" => !empty($order) ? "Órden actualizada" : "Órden sin actualizar",
                 "body" => $order,
                 "redirect" => false
             ], 404);
