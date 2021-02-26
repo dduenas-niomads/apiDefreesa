@@ -219,6 +219,7 @@ class PaymentsController extends Controller
             if (isset($params['date'])) {
                 $date = urldecode($params['date']);
                 $date = str_replace('/', '-', $date);
+                dd($date);
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $date . '%');
             }
             $orders = $orders->with('supplier')
