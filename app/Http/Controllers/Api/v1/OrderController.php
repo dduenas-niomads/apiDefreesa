@@ -103,6 +103,7 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
@@ -222,7 +223,7 @@ class OrderController extends Controller
             ->first();
 
         if (!is_null($deliveryUser)) {
-            $idDeliveryUser = $deliveryUser->users_id;
+            $idDeliveryUser = $deliveryUser->id;
         }
         return $idDeliveryUser;
     }
@@ -309,7 +310,7 @@ class OrderController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->first();
                 if (!is_null($order)) {
-                    if ($order->status < 6) {
+                    if ($order->status < 5) {
                         $msOrderStatus = MsOrderStatus::find($order->status + 1);
                         $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
                         $order->order_next_status = $msOrderStatus;

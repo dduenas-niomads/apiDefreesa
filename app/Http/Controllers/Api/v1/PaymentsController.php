@@ -219,6 +219,7 @@ class PaymentsController extends Controller
                 ->first();
             if (!is_null($deliveryUser)) {
                 $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                    ->where(Order::TABLE_NAME . '.status', '!=', Order::STATUS_NOT_PROCEED)
                     ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id);
                 if (isset($params['date'])) {
                     $date = urldecode($params['date']);
@@ -244,6 +245,7 @@ class PaymentsController extends Controller
                         "operation_customer" => $value->customer->name,
                         'status_id'=> !is_null($value->orderStatus) ? $value->orderStatus->id : 6, 
                         'status_name'=> !is_null($value->orderStatus) ? $value->orderStatus->name : "NO PROCESADO", 
+                        'status_color'=> !is_null($value->orderStatus) ? $value->orderStatus->color : "#ffffff", 
                         'amount'=> $value->delivery_amount + $value->tips, 
                         'currency'=> 'PEN'
                     ]);
