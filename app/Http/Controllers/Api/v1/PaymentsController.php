@@ -214,12 +214,11 @@ class PaymentsController extends Controller
             $total = 0;
             $list = [];
             $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id)
-                ->whereNotIn(Order::TABLE_NAME . '.status', [5,6]);
+                ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
             if (isset($params['date'])) {
                 $date = urldecode($params['date']);
-                $date = str_replace('/', '-', $date);
-                dd($date);
+                $date = explode('/', $date);
+                $date = $date[0] . '-' . str_pad($date[1], 2, "0", STR_PAD_LEFT) . '-' . str_pad($date[2], 2, "0", STR_PAD_LEFT);
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $date . '%');
             }
             $orders = $orders->with('supplier')
@@ -229,7 +228,9 @@ class PaymentsController extends Controller
                 ->get();
 
             foreach ($orders as $key => $value) {
-                $total = $total + $value->delivery_amount + $value->tips;
+                if ((int)$value->status === Order::STATUS_FINAL) {
+                    $total = $total + $value->delivery_amount + $value->tips;
+                }
                 array_push($list, [
                     "id" => $value->id,
                     "created_at" => $value->created_at->format('Y-m-d H:i:s'),
