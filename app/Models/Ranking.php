@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ranking extends Model
 {
+    use \Awobaz\Compoships\Compoships;
+
     protected $connection = 'mysql';
     const TABLE_NAME = 'bs_rankings';
     const STATE_ACTIVE = true;
