@@ -281,26 +281,42 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNotIn('status', [5,6])
-                ->with('supplier')
-                ->with('customer')
-                ->with('orderStatus')
-                ->orderBy('created_at', 'DESC')
+            $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+                ->where(DeliveryUser::TABLE_NAME . '.users_id', $user->id)
                 ->first();
-            if (!is_null($order)) {
-                $msOrderStatus = MsOrderStatus::find($order->status + 1);
-                $order->order_next_status = $msOrderStatus;
+            if (!is_null($deliveryUser)) {
+                $order = Order::whereNotIn(Order::TABLE_NAME . '.status', [1, 5,6])
+                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id)
+                    ->with('supplier')
+                    ->with('customer')
+                    ->with('orderStatus')
+                    ->orderBy('created_at', 'DESC')
+                    ->first();
+                if (!is_null($order)) {
+                    if ($order->status < 6) {
+                        $msOrderStatus = MsOrderStatus::find($order->status + 1);
+                        $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
+                        $order->order_next_status = $msOrderStatus;
+                    }
+                }
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "find order" : "No tienes órdenes pendientes",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    "message" => "No se encontraron datos del usuario",
+                    "body" => null,
+                    "redirect" => true
+                ], 400);
             }
-            return response([
-                "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "find order" : "No tienes órdenes pendientes",
-                "body" => $order,
-                "redirect" => false
-            ], 200);
         } else {
             return response([
                 "status" => false,
-                "message" => "forbidden",
+                "message" => "Su sesión no se encuentra activa",
                 "body" => null,
                 "redirect" => true
             ], 403);

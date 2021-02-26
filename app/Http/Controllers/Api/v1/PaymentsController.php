@@ -218,9 +218,8 @@ class PaymentsController extends Controller
                 ->where(DeliveryUser::TABLE_NAME . '.users_id', $user->id)
                 ->first();
             if (!is_null($deliveryUser)) {
-                $deliveryUserId = $deliveryUser->id;
                 $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUserId);
+                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id);
                 if (isset($params['date'])) {
                     $date = urldecode($params['date']);
                     $date = explode('/', $date);
