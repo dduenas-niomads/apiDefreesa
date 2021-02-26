@@ -309,7 +309,7 @@ class OrderController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->first();
                 if (!is_null($order)) {
-                    if ($order->status < 6) {
+                    if ($order->status < 5) {
                         $msOrderStatus = MsOrderStatus::find($order->status + 1);
                         $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
                         $order->order_next_status = $msOrderStatus;
