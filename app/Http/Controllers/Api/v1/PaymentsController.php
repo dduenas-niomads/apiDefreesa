@@ -206,19 +206,23 @@ class PaymentsController extends Controller
         }
     }
 
-    public function myFounds()
+    public function myFounds(Request $request)
     {
         $user = Auth::user();
         if (!is_null($user)) {
-
+            $params = $request->all();
             $total = 0;
             $list = [];
             $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id)
-                ->whereNotIn(Order::TABLE_NAME . '.status', [5,6])
-                ->with('supplier')
+                ->whereNotIn(Order::TABLE_NAME . '.status', [5,6]);
+            if (isset($params['date'])) {
+                $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $params['date'] . '%');
+            }
+            $orders = $orders->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->get();
 
             foreach ($orders as $key => $value) {
@@ -236,9 +240,9 @@ class PaymentsController extends Controller
             }
             
             $responseJson = ['balance' => $total, 
-                    'pending' => $total, 
-                    'list' => $list
-                ];
+                'pending' => $total, 
+                'list' => $list
+            ];
 
             return response()->json([
                 "status" => true,
