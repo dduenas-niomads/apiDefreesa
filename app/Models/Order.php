@@ -71,7 +71,8 @@ class Order extends Model
     public function ranking()
     {
         return $this->hasOne('App\Models\Ranking', 'bs_orders_id')
-            ->whereNull('deleted_at');
+            ->whereNull('deleted_at')
+            ->orWhere('users_id','=',$this->users_id);
     }
     /**
      * The attributes that should be hidden for arrays.
