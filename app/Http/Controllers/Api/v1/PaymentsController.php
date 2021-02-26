@@ -232,7 +232,7 @@ class PaymentsController extends Controller
                 $total = $total + $value->delivery_amount + $value->tips;
                 array_push($list, [
                     "id" => $value->id,
-                    "created_at" => $value->created_at,
+                    "created_at" => $value->created_at->format('Y-m-d H:i:s'),
                     "operation_supplier" => $value->supplier->name,
                     "operation_customer" => $value->customer->name,
                     'status_id'=> $value->orderStatus->id, 
