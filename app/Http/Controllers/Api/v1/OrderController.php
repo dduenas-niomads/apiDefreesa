@@ -565,8 +565,9 @@ class OrderController extends Controller
 
         if (isset($params['point_a'])
             && isset($params['point_b'])) {
-            $users = User::where('status', '1')->count();
-            dd($users);
+            $users = User::where('status', '1')
+                ->where('type', '2')
+                ->count();
             if ($users > 0) {
                 $response = response([
                     "status" => true,
