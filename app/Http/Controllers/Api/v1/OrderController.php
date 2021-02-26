@@ -103,6 +103,7 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
