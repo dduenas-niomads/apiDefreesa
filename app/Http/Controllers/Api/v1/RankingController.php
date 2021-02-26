@@ -24,6 +24,7 @@ class RankingController extends Controller
             if (isset($params['orderBy']) && !is_null($params['orderBy'])) {
                 $rankings = $rankings->orderBy($params['orderBy'], $params['orderDir']);
             }
+            dd($rankings->toSql(), $rankings->getBindings());
             $rankings = $rankings->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($rankings) ? true : false,
