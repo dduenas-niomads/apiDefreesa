@@ -218,8 +218,9 @@ class PaymentsController extends Controller
                 ->whereNotIn(Order::TABLE_NAME . '.status', [5,6]);
             if (isset($params['date'])) {
                 $date = urldecode($params['date']);
-                $date = str_replace('/', '-', $date);
-                dd($date);
+                $date = explode('/', $date);
+                $dateFormat = $date[0] . '-' . str_pad($date[1], 2, "0", STR_PAD_LEFT) . '-' . str_pad($date[2], 2, "0", STR_PAD_LEFT);
+                dd($dateFormat);
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $date . '%');
             }
             $orders = $orders->with('supplier')
