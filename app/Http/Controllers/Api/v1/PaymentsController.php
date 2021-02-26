@@ -243,8 +243,8 @@ class PaymentsController extends Controller
                         "created_at" => $value->created_at,
                         "operation_supplier" => $value->supplier->name,
                         "operation_customer" => $value->customer->name,
-                        'status_id'=> $value->orderStatus->id, 
-                        'status_name'=> $value->orderStatus->name, 
+                        'status_id'=> !is_null($value->orderStatus) ? $value->orderStatus->id : 6, 
+                        'status_name'=> !is_null($value->orderStatus) ? $value->orderStatus->name : "NO PROCESADO", 
                         'amount'=> $value->delivery_amount + $value->tips, 
                         'currency'=> 'PEN'
                     ]);
