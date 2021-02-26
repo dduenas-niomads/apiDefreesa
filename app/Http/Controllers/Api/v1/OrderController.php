@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 use App\DeliveryUser;
+use App\User;
 use Kreait\Firebase\Database;
 use App\Http\Controllers\Api\v1\NotificationController;
 
@@ -24,9 +25,16 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+            $orders = Order::select(Order::TABLE_NAME . '.id',
+                    Order::TABLE_NAME . '.users_id',
+                    Order::TABLE_NAME . '.bs_suppliers_id',
+                    Order::TABLE_NAME . '.status',
+                    Order::TABLE_NAME . '.total',
+                    Order::TABLE_NAME . '.created_at')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->paginate(env('ITEMS_PAGINATOR'));
@@ -143,47 +151,59 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $params = $request->all();
-            $params['users_id'] = $user->id;
-            if (isset($params['details_info']) && is_array($params['details_info'])) {
-                $params['bs_suppliers_id'] = 0;
-                $countDemand = 0;
-                $demandAvailable = true;
-                foreach ($params['details_info'] as $key => $value) {
-                    $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
-                    $countDemand++;
-                }
-                $supplier = Supplier::find($params['bs_suppliers_id']);
-                if (!is_null($supplier)) {
-                    $freeDemand = $supplier->on_demand - $supplier->on_demand_now;
-                    if ($freeDemand < $countDemand) {
-                        $demandAvailable = false;
-                    } else {
-                        $supplier->on_demand_now = $supplier->on_demand_now + $countDemand;
-                        $supplier->save();
+            $deliveryCount = User::where('status', '1')
+                ->where('type', '2')
+                ->count();
+            if ($deliveryCount > 0) {
+                $params = $request->all();
+                $params['users_id'] = $user->id;
+                if (isset($params['details_info']) && is_array($params['details_info'])) {
+                    $params['bs_suppliers_id'] = 0;
+                    $countDemand = 0;
+                    $demandAvailable = true;
+                    foreach ($params['details_info'] as $key => $value) {
+                        $params['bs_suppliers_id'] = $value['bs_suppliers_id'];
+                        $countDemand++;
+                    }
+                    $supplier = Supplier::find($params['bs_suppliers_id']);
+                    if (!is_null($supplier)) {
+                        $freeDemand = $supplier->on_demand - $supplier->on_demand_now;
+                        if ($freeDemand < $countDemand) {
+                            $demandAvailable = false;
+                        } else {
+                            $supplier->on_demand_now = $supplier->on_demand_now + $countDemand;
+                            $supplier->save();
+                        }
                     }
                 }
-            }
-            if ($demandAvailable) {
-                $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
-                $order = Order::create($params);
-                if (isset($params['address_info'])) {
-                    $user->address_info = $params['address_info'];
-                    $user->save();
+                if ($demandAvailable) {
+                    $params['bs_delivery_id'] = $this->findDeliveryGuy($params);
+                    $order = Order::create($params);
+                    if (isset($params['address_info'])) {
+                        $user->address_info = $params['address_info'];
+                        $user->save();
+                    }
+                    // Create in firebase
+                    $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
+                    // Create in firebase
+                    return response([
+                        "status" => !empty($order) ? true : false,
+                        "message" => !empty($order) ? "created order" : "order cannot be created",
+                        "body" => $order,
+                        "redirect" => false
+                    ], 201);
+                } else {
+                    return response([
+                        "status" => false,
+                        "message" => "Nuestro partner no puede atender tu pedido ahora mismo. Intenta nuevamente en unos minutos :)",
+                        "body" => null,
+                        "redirect" => true
+                    ], 400);
                 }
-                // Create in firebase
-                $this->createOrderInFirebase($order, $user, "Gracias por usar Defreesa. Tu orden ha sido creada");
-                // Create in firebase
-                return response([
-                    "status" => !empty($order) ? true : false,
-                    "message" => !empty($order) ? "created order" : "order cannot be created",
-                    "body" => $order,
-                    "redirect" => false
-                ], 201);
             } else {
                 return response([
                     "status" => false,
-                    "message" => "Nuestro partner no puede atender tu pedido ahora mismo. Intenta nuevamente en unos minutos :)",
+                    "message" => "En este momento todos nuestros Defreevers se encuentran ocupados. Por favor, intenta en 5 minutos!",
                     "body" => null,
                     "redirect" => true
                 ], 400);
@@ -201,12 +221,15 @@ class OrderController extends Controller
     public function findDeliveryGuy($params = [])
     {
         $idDeliveryUser = 0;
-        $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+        $deliveryUser = DeliveryUser::join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=',
+                DeliveryUser::TABLE_NAME . '.users_id')
+            ->whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
             ->where(DeliveryUser::TABLE_NAME . '.active', '1')
+            ->where(User::TABLE_NAME . '.status', '1')
             ->first();
 
         if (!is_null($deliveryUser)) {
-            $idDeliveryUser = $deliveryUser->users_id;
+            $idDeliveryUser = $deliveryUser->id;
         }
         return $idDeliveryUser;
     }
@@ -281,26 +304,42 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $order = Order::whereNotIn('status', [5,6])
-                ->with('supplier')
-                ->with('customer')
-                ->with('orderStatus')
-                ->orderBy('created_at', 'DESC')
+            $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+                ->where(DeliveryUser::TABLE_NAME . '.users_id', $user->id)
                 ->first();
-            if (!is_null($order)) {
-                $msOrderStatus = MsOrderStatus::find($order->status + 1);
-                $order->order_next_status = $msOrderStatus;
+            if (!is_null($deliveryUser)) {
+                $order = Order::whereNotIn(Order::TABLE_NAME . '.status', [1, 5,6])
+                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id)
+                    ->with('supplier')
+                    ->with('customer')
+                    ->with('orderStatus')
+                    ->orderBy('created_at', 'DESC')
+                    ->first();
+                if (!is_null($order)) {
+                    if ($order->status < 5) {
+                        $msOrderStatus = MsOrderStatus::find($order->status + 1);
+                        $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
+                        $order->order_next_status = $msOrderStatus;
+                    }
+                }
+                return response([
+                    "status" => !empty($order) ? true : false,
+                    "message" => !empty($order) ? "find order" : "No tienes órdenes pendientes",
+                    "body" => $order,
+                    "redirect" => false
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    "message" => "No se encontraron datos del usuario",
+                    "body" => null,
+                    "redirect" => true
+                ], 400);
             }
-            return response([
-                "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "find order" : "No tienes órdenes pendientes",
-                "body" => $order,
-                "redirect" => false
-            ], 200);
         } else {
             return response([
                 "status" => false,
-                "message" => "forbidden",
+                "message" => "Su sesión no se encuentra activa",
                 "body" => null,
                 "redirect" => true
             ], 403);
@@ -536,7 +575,7 @@ class OrderController extends Controller
     {
         $response = response([
             "status"  => false,
-            "message" => "Bad request",
+            "message" => "En este momento todos nuestros Defreevers se encuentran ocupados. Por favor, intenta en 5 minutos!",
             "body"    => null,
             "redirect" => false
         ], 400);
@@ -545,15 +584,20 @@ class OrderController extends Controller
 
         if (isset($params['point_a'])
             && isset($params['point_b'])) {
-            $response = response([
-                "status" => true,
-                "message" => "Ok",
-                "body" => [
-                    "cost" => 10.00,
-                    "distance" => "... km"
-                ],
-                "redirect" => false
-            ], 200);
+            $users = User::where('status', '1')
+                ->where('type', '2')
+                ->count();
+            if ($users > 0) {
+                $response = response([
+                    "status" => true,
+                    "message" => "Ok",
+                    "body" => [
+                        "cost" => 10.00,
+                        "distance" => "... km"
+                    ],
+                    "redirect" => false
+                ], 200);
+            }
         }
 
         return $response;

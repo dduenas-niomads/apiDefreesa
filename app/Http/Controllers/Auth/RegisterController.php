@@ -232,7 +232,7 @@ class RegisterController extends Controller
         if (!$user) {
             return response()->json([
                 'status'  => false,
-                'message' => 'This user not exist.',
+                'message' => 'No encontramos ese correo electrónico en nuestros registros. Por favor, intenta nuevamente.',
                 'body'    => null,
                 'redirect' => false
             ], 404);

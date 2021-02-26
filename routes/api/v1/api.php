@@ -22,6 +22,7 @@ Route::prefix('/user')->group(function() {
     Route::middleware('auth:api')->delete('/logout-all', 'Api\v1\LoginController@logoutAll');
     Route::middleware('auth:api')->get('/', 'Api\v1\UserController@show');
     Route::middleware('auth:api')->patch('/update', 'Api\v1\UserController@update');
+    Route::middleware('auth:api')->get('/change-status/{status}', 'Api\v1\UserController@changeStatus');
 });
 
 // Licenses/Plans
@@ -124,4 +125,10 @@ Route::prefix('/payments')->group(function() {
     Route::middleware('auth:api')->get('/{id}', 'Api\v1\PaymentsController@show');
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\PaymentsController@update'); 
     Route::middleware('auth:api')->delete('/{id}', 'Api\v1\PaymentsController@destroy');  
+});
+
+// Rankings
+Route::prefix('/rankings')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\RankingController@index');
+    Route::middleware('auth:api')->post('/', 'Api\v1\RankingController@store'); 
 });

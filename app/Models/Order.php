@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use \Awobaz\Compoships\Compoships;
+
     protected $connection = 'mysql';
     const TABLE_NAME = 'bs_orders';
     const STATE_ACTIVE = true;
@@ -22,12 +24,14 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-        //Table Rows
+        // Table Rows
         'id','users_id','details_info','total','total_info', 'receptor_phone', 'receptor_name',
-        'bs_suppliers_id','status','commentary_info','purchase_info', 'emisor_phone',
+        'invoice_info','bs_suppliers_id','status','commentary_info','purchase_info', 'emisor_phone',
         'address_info','commentary','tips','type_document','document_number', 'detail_label_order',
         'delivery_status','pickup_address_info','type_order', 'emisor_name', 'bs_delivery_id',
-        //Audit 
+        // Ranking
+        'flag_ranking_needed',
+        // Audit 
         'flag_active','created_at','updated_at','deleted_at',
     ];
     /**
@@ -40,7 +44,8 @@ class Order extends Model
         'total_info' => 'array',
         'purchase_info' => 'array',
         'pickup_address_info' => 'array',
-        'address_info' => 'array'
+        'address_info' => 'array',
+        'invoice_info' => 'array'
     ];    
     public function getFillable() 
     {
@@ -62,7 +67,12 @@ class Order extends Model
     public function orderStatus()
     {
         return $this->belongsTo('App\Models\MsOrderStatus', 'status')
-            ->select('id', 'name', 'description')
+            ->select('id', 'name', 'color' ,'description')
+            ->whereNull('deleted_at');
+    }
+    public function ranking()
+    {
+        return $this->hasOne('App\Models\Ranking', ['bs_orders_id', 'users_id'], ['id', 'users_id'])
             ->whereNull('deleted_at');
     }
     /**

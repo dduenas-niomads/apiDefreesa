@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use App\Models\Order;
+use App\DeliveryUser;
 
 class PaymentsController extends Controller
 {
@@ -206,51 +207,72 @@ class PaymentsController extends Controller
         }
     }
 
-    public function myFounds()
+    public function myFounds(Request $request)
     {
         $user = Auth::user();
         if (!is_null($user)) {
-
+            $params = $request->all();
             $total = 0;
             $list = [];
-            $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id)
-                ->whereNotIn(Order::TABLE_NAME . '.status', [5,6])
-                ->with('supplier')
-                ->with('customer')
-                ->with('orderStatus')
-                ->get();
-
-            foreach ($orders as $key => $value) {
-                $total = $total + $value->delivery_amount + $value->tips;
-                array_push($list, [
-                    "id" => $value->id,
-                    "created_at" => $value->created_at,
-                    "operation_supplier" => $value->supplier->name,
-                    "operation_customer" => $value->customer->name,
-                    'status_id'=> $value->orderStatus->id, 
-                    'status_name'=> $value->orderStatus->name, 
-                    'amount'=> $value->delivery_amount + $value->tips, 
-                    'currency'=> 'PEN'
-                ]);
-            }
-            
-            $responseJson = ['balance' => $total, 
+            $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+                ->where(DeliveryUser::TABLE_NAME . '.users_id', $user->id)
+                ->first();
+            if (!is_null($deliveryUser)) {
+                $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                    ->where(Order::TABLE_NAME . '.status', '!=', Order::STATUS_NOT_PROCEED)
+                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id);
+                if (isset($params['date'])) {
+                    $date = urldecode($params['date']);
+                    $date = explode('/', $date);
+                    $date = $date[0] . '-' . str_pad($date[1], 2, "0", STR_PAD_LEFT) . '-' . str_pad($date[2], 2, "0", STR_PAD_LEFT);
+                    $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $date . '%');
+                }
+                $orders = $orders->with('supplier')
+                    ->with('customer')
+                    ->with('orderStatus')
+                    ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
+                    ->get();
+    
+                foreach ($orders as $key => $value) {
+                    if ((int)$value->status === Order::STATUS_FINAL) {
+                        $total = $total + $value->delivery_amount + $value->tips;
+                    }
+                    array_push($list, [
+                        "id" => $value->id,
+                        // "created_at" => $value->created_at->format('Y-m-d H:i:s'),
+                        "created_at" => $value->created_at,
+                        "operation_supplier" => $value->supplier->name,
+                        "operation_customer" => $value->customer->name,
+                        'status_id'=> !is_null($value->orderStatus) ? $value->orderStatus->id : 6, 
+                        'status_name'=> !is_null($value->orderStatus) ? $value->orderStatus->name : "NO PROCESADO", 
+                        'status_color'=> !is_null($value->orderStatus) ? $value->orderStatus->color : "#ffffff", 
+                        'amount'=> $value->delivery_amount + $value->tips, 
+                        'currency'=> 'PEN'
+                    ]);
+                }
+                
+                $responseJson = ['balance' => $total, 
                     'pending' => $total, 
                     'list' => $list
                 ];
-
-            return response()->json([
-                "status" => true,
-                "message" => "list of founds",
-                "body" => $responseJson,
-                "redirect" => false
-            ]);
+    
+                return response()->json([
+                    "status" => true,
+                    "message" => "list of founds",
+                    "body" => $responseJson,
+                    "redirect" => false
+                ]);
+            } else {
+                return response([
+                    "message" => "No se encontraron datos del usuario",
+                    "body" => null
+                ], 400);
+            }
         } else {
             return response([
-                "message" => "forbidden",
+                "message" => "Su sesión no se encuentra activa",
                 "body" => null
-            ], 403);
+            ], 400);
         }
     }
 }
