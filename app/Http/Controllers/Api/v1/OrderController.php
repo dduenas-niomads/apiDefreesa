@@ -536,25 +536,25 @@ class OrderController extends Controller
     {
         $response = response([
             "status"  => false,
-            "message" => "Bad request",
+            "message" => "En este momento todos nuestros Defreevers se encuentran ocupados. Por favor, intenta en 5 minutos!",
             "body"    => null,
             "redirect" => false
         ], 400);
 
         $params = $request->all();
 
-        if (isset($params['point_a'])
-            && isset($params['point_b'])) {
-            $response = response([
-                "status" => true,
-                "message" => "Ok",
-                "body" => [
-                    "cost" => 10.00,
-                    "distance" => "... km"
-                ],
-                "redirect" => false
-            ], 200);
-        }
+        // if (isset($params['point_a'])
+        //     && isset($params['point_b'])) {
+        //     $response = response([
+        //         "status" => true,
+        //         "message" => "Ok",
+        //         "body" => [
+        //             "cost" => 10.00,
+        //             "distance" => "... km"
+        //         ],
+        //         "redirect" => false
+        //     ], 200);
+        // }
 
         return $response;
     }
