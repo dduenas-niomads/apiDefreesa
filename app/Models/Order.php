@@ -72,9 +72,8 @@ class Order extends Model
     }
     public function ranking()
     {
-        dd($this->hasOne('App\Models\Ranking', ['bs_orders_id', 'users_id'], ['id', 'users_id'])
-            ->whereNull('deleted_at')
-            ->toSql());
+        return $this->hasOne('App\Models\Ranking', ['bs_orders_id', 'users_id'], ['id', 'users_id'])
+            ->whereNull('deleted_at');
     }
     /**
      * The attributes that should be hidden for arrays.
