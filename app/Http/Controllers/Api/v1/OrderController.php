@@ -36,8 +36,10 @@ class OrderController extends Controller
                 ->with('orderStatus')
                 ->with('ranking')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
-                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
-                ->paginate(env('ITEMS_PAGINATOR'));
+                ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC');
+
+            dd($orders->toSql(), $orders->getBindings());
+                // ->paginate(env('ITEMS_PAGINATOR'));
             return response([
                 "status" => !empty($orders) ? true : false,
                 "message" => !empty($orders) ? "list of orders" : "orders not found",
