@@ -536,7 +536,7 @@ class OrderController extends Controller
     {
         $response = response([
             "status"  => false,
-            "message" => "Bad request",
+            "message" => "En este momento todos nuestros Defreevers se encuentran ocupados. Por favor, intenta en 5 minutos!",
             "body"    => null,
             "redirect" => false
         ], 400);
