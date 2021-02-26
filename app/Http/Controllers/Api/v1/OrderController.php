@@ -222,7 +222,7 @@ class OrderController extends Controller
             ->first();
 
         if (!is_null($deliveryUser)) {
-            $idDeliveryUser = $deliveryUser->users_id;
+            $idDeliveryUser = $deliveryUser->id;
         }
         return $idDeliveryUser;
     }
