@@ -543,18 +543,18 @@ class OrderController extends Controller
 
         $params = $request->all();
 
-        // if (isset($params['point_a'])
-        //     && isset($params['point_b'])) {
-        //     $response = response([
-        //         "status" => true,
-        //         "message" => "Ok",
-        //         "body" => [
-        //             "cost" => 10.00,
-        //             "distance" => "... km"
-        //         ],
-        //         "redirect" => false
-        //     ], 200);
-        // }
+        if (isset($params['point_a'])
+            && isset($params['point_b'])) {
+            $response = response([
+                "status" => true,
+                "message" => "Ok",
+                "body" => [
+                    "cost" => 10.00,
+                    "distance" => "... km"
+                ],
+                "redirect" => false
+            ], 200);
+        }
 
         return $response;
     }
