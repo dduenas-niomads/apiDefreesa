@@ -126,3 +126,9 @@ Route::prefix('/payments')->group(function() {
     Route::middleware('auth:api')->patch('/{id}', 'Api\v1\PaymentsController@update'); 
     Route::middleware('auth:api')->delete('/{id}', 'Api\v1\PaymentsController@destroy');  
 });
+
+// Rankings
+Route::prefix('/rankings')->group(function() {
+    Route::middleware('auth:api')->get('/', 'Api\v1\RankingController@index');
+    Route::middleware('auth:api')->post('/', 'Api\v1\RankingController@store'); 
+});

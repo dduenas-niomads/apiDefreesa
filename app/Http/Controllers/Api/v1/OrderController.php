@@ -25,9 +25,16 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+            $orders = Order::select(Order::TABLE_NAME . '.id',
+                    Order::TABLE_NAME . '.users_id',
+                    Order::TABLE_NAME . '.bs_suppliers_id',
+                    Order::TABLE_NAME . '.status',
+                    Order::TABLE_NAME . '.total',
+                    Order::TABLE_NAME . '.created_at')
+                ->whereNull(Order::TABLE_NAME . '.deleted_at')
                 ->with('supplier')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Order::TABLE_NAME . '.users_id', $user->id)
                 ->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')
                 ->paginate(env('ITEMS_PAGINATOR'));
