@@ -59,6 +59,7 @@ class OrderController extends Controller
                 ->with('supplier')
                 ->with('customer')
                 ->with('orderStatus')
+                ->with('ranking')
                 ->where(Supplier::TABLE_NAME . '.acl_partner_users_id', '=', $user->id);
             if (isset($params['date']) && $params['date'] !== "") {
                 $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
