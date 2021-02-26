@@ -245,6 +245,7 @@ class PaymentsController extends Controller
                         "operation_customer" => $value->customer->name,
                         'status_id'=> !is_null($value->orderStatus) ? $value->orderStatus->id : 6, 
                         'status_name'=> !is_null($value->orderStatus) ? $value->orderStatus->name : "NO PROCESADO", 
+                        'status_color'=> !is_null($value->orderStatus) ? $value->orderStatus->color : "#ffffff", 
                         'amount'=> $value->delivery_amount + $value->tips, 
                         'currency'=> 'PEN'
                     ]);
