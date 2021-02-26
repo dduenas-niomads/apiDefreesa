@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\MsOrderStatus;
 use App\DeliveryUser;
+use App\User;
 use Kreait\Firebase\Database;
 use App\Http\Controllers\Api\v1\NotificationController;
 
@@ -201,8 +202,11 @@ class OrderController extends Controller
     public function findDeliveryGuy($params = [])
     {
         $idDeliveryUser = 0;
-        $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+        $deliveryUser = DeliveryUser::join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=',
+                DeliveryUser::TABLE_NAME . '.users_id')
+            ->whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
             ->where(DeliveryUser::TABLE_NAME . '.active', '1')
+            ->where(User::TABLE_NAME . '.status', '1')
             ->first();
 
         if (!is_null($deliveryUser)) {
@@ -561,15 +565,18 @@ class OrderController extends Controller
 
         if (isset($params['point_a'])
             && isset($params['point_b'])) {
-            $response = response([
-                "status" => true,
-                "message" => "Ok",
-                "body" => [
-                    "cost" => 10.00,
-                    "distance" => "... km"
-                ],
-                "redirect" => false
-            ], 200);
+            $users = User::where('status', '1')->count();
+            if ($users > 0) {
+                $response = response([
+                    "status" => true,
+                    "message" => "Ok",
+                    "body" => [
+                        "cost" => 10.00,
+                        "distance" => "... km"
+                    ],
+                    "redirect" => false
+                ], 200);
+            }
         }
 
         return $response;
