@@ -225,7 +225,7 @@ class PaymentsController extends Controller
                     $date = urldecode($params['date']);
                     $date = explode('/', $date);
                     if (!isset($date[1])) {
-                        $date = explode('-', $date);
+                        $date = explode('-', $date[0]);
                     }
                     $date = $date[0] . '-' . str_pad($date[1], 2, "0", STR_PAD_LEFT) . '-' . str_pad($date[2], 2, "0", STR_PAD_LEFT);
                     $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'LIKE', '%' . $date . '%');
