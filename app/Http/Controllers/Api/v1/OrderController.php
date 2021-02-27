@@ -105,22 +105,27 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         if (!is_null($user)) {
-            $params = $request->all();
-            $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
-                ->with('supplier')
-                ->with('customer')
-                ->with('orderStatus')
-                ->where(Order::TABLE_NAME . '.bs_delivery_id', $user->id);
-            if (isset($params['date']) && $params['date'] !== "") {
-                $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+            $deliveryUser = DeliveryUser::whereNull(DeliveryUser::TABLE_NAME . '.deleted_at')
+                ->where(DeliveryUser::TABLE_NAME . '.users_id', $user->id)
+                ->first();
+            if (!is_null($deliveryUser)) {
+                $params = $request->all();
+                $orders = Order::whereNull(Order::TABLE_NAME . '.deleted_at')
+                    ->with('supplier')
+                    ->with('customer')
+                    ->with('orderStatus')
+                    ->where(Order::TABLE_NAME . '.bs_delivery_id', $deliveryUser->id);
+                if (isset($params['date']) && $params['date'] !== "") {
+                    $orders = $orders->where(Order::TABLE_NAME . '.created_at', 'like', '%' . $params['date'] . '%');
+                }
+                $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')->get();
+                return response([
+                    "status" => !empty($orders) ? true : false,
+                    "message" => !empty($orders) ? "list of orders" : "orders not found",
+                    "body" => $orders,
+                    "redirect" => false
+                ], 200);
             }
-            $orders = $orders->orderBy(Order::TABLE_NAME . '.created_at', 'DESC')->get();
-            return response([
-                "status" => !empty($orders) ? true : false,
-                "message" => !empty($orders) ? "list of orders" : "orders not found",
-                "body" => $orders,
-                "redirect" => false
-            ], 200);
         } else {
             return response([
                 "status" => false,
