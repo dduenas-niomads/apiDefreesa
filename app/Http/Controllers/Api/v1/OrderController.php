@@ -322,13 +322,13 @@ class OrderController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->first();
                 if (!is_null($order)) {
-                    // if ($order->status < 5) {
+                    if ($order->status < 5) {
                         $msOrderStatus = MsOrderStatus::find($order->status + 1);
                         if (!is_null($msOrderStatus)) {
                             $msOrderStatus->name = "PASAR A: " . $msOrderStatus->name;
                         }
                         $order->order_next_status = $msOrderStatus;
-                    // }
+                    }
                 }
                 return response([
                     "status" => !empty($order) ? true : false,
@@ -424,7 +424,7 @@ class OrderController extends Controller
             ->find($id);
 
         if (!is_null($order)) {
-            if ($order->status > Order::STATUS_FINAL) {
+            if ($order->status < Order::STATUS_FINAL) {
                 $order->status = $order->status + 1;
                 $order->save();
                 if (!is_null($order)) {
