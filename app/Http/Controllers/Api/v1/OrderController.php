@@ -418,7 +418,8 @@ class OrderController extends Controller
 
     public function deliveryNextStatus($id, Request $request)
     {
-        $order = Order::with('supplier')
+        $order = Order::where('status', '<=', Order::STATUS_FINAL)
+            ->with('supplier')
             ->with('customer')
             ->with('orderStatus')
             ->find($id);
@@ -447,7 +448,7 @@ class OrderController extends Controller
         } else {
             return response([
                 "status" => !empty($order) ? true : false,
-                "message" => !empty($order) ? "Órden actualizada" : "Órden sin actualizar",
+                "message" => "La orden ya fue completada",
                 "body" => $order,
                 "redirect" => false
             ], 404);
