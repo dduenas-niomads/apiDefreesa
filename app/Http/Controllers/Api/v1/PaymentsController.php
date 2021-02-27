@@ -224,7 +224,6 @@ class PaymentsController extends Controller
                 if (isset($params['date'])) {
                     $date = urldecode($params['date']);
                     $date = explode('/', $date);
-                    dd($date);
                     if (isset($date[1])) {
                         $date = explode('-', $date);
                     }
